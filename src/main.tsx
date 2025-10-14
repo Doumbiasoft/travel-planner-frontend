@@ -7,19 +7,22 @@ import "./styles/style.css";
 import App from "./App.tsx";
 import { AuthProvider } from "./hooks/AuthProvider.tsx";
 import themeAntd from "./styles/theme-Antd.tsx";
+import { AlertNotificationProvider } from "./hooks/AlertNotification.tsx";
 
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <GoogleOAuthProvider clientId="<your_client_id>">
-          <ConfigProvider theme={themeAntd}>
-            <App />
-          </ConfigProvider>
-        </GoogleOAuthProvider>
-      </AuthProvider>
+      <AlertNotificationProvider>
+        <AuthProvider>
+          <GoogleOAuthProvider clientId="<your_client_id>">
+            <ConfigProvider theme={themeAntd}>
+              <App />
+            </ConfigProvider>
+          </GoogleOAuthProvider>
+        </AuthProvider>
+      </AlertNotificationProvider>
     </QueryClientProvider>
-  </StrictMode> 
+  </StrictMode>
 );
