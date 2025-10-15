@@ -26,7 +26,7 @@ const SignInPage: React.FC = () => {
   const { login } = useAuth();
   const openNotification = useAlertNotification();
   const navigate = useNavigate();
-  const { handleGoogleSignIn, isLoading: isGoogleLoading } = useGoogleOauth();
+  const { handleGoogleSignIn, isLoading: isGoogleLoading } = useGoogleOauth(login);
   const {
     register,
     handleSubmit: handleFormSubmit,

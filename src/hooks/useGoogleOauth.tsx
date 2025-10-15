@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useGoogleLogin, googleLogout } from "@react-oauth/google";
 import axios from "axios";
-import { useAuth } from "./AuthProvider";
 import { useAlertNotification } from "./AlertNotification";
 import { useNavigate } from "react-router-dom";
 import unitOfWork from "../api/unit-of-work";
@@ -16,10 +15,9 @@ interface GoogleUserInfo {
   verified_email: boolean;
 }
 
-export const useGoogleOauth = () => {
+export const useGoogleOauth = (login: (token: string) => Promise<void>) => {
   const [googleToken, setGoogleToken] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { login } = useAuth();
   const openNotification = useAlertNotification();
   const navigate = useNavigate();
 
