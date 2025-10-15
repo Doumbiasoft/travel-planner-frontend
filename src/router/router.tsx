@@ -8,11 +8,16 @@ import SignInPage from "../pages/auth/SignInPage";
 import SignUpPage from "../pages/auth/SignUpPage";
 import SettingsPage from "../pages/SettingsPage";
 import ProtectedRoute from "./ProtectedRoute";
+import PublicRoute from "./PublicRoute";
 
 const routes: RouteObject[] = [
   {
     path: "/",
-    element: <LandingPage />,
+    element: (
+      <PublicRoute>
+        <LandingPage />
+      </PublicRoute>
+    ),
     errorElement: <NotFoundPage />,
   },
   {
@@ -47,11 +52,19 @@ const routes: RouteObject[] = [
   },
   {
     path: "/signin",
-    element: <SignInPage />,
+    element: (
+      <PublicRoute>
+        <SignInPage />
+      </PublicRoute>
+    ),
   },
   {
     path: "/signup",
-    element: <SignUpPage />,
+    element: (
+      <PublicRoute>
+        <SignUpPage />
+      </PublicRoute>
+    ),
   },
 ];
 
