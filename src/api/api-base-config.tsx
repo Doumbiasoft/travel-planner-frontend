@@ -1,4 +1,5 @@
 import axios, { type AxiosRequestConfig, type AxiosResponse } from "axios";
+import { ENV } from "../config/env";
 
 // Extend axios types to include metadata and retry flag
 declare module "axios" {
@@ -12,11 +13,9 @@ declare module "axios" {
   }
 }
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
-
 // Internal API instance
 const internalAxiosInstance = axios.create({
-  baseURL: BASE_URL,
+  baseURL: ENV.VITE_API_BASE_URL,
   timeout: 10000, // 10 seconds - increased for auth refresh operations
   headers: {
     "Content-Type": "application/json",

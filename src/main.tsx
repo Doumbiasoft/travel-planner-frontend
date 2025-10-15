@@ -8,6 +8,7 @@ import App from "./App.tsx";
 import { AuthProvider } from "./hooks/AuthProvider.tsx";
 import themeAntd from "./styles/theme-Antd.tsx";
 import { AlertNotificationProvider } from "./hooks/AlertNotification.tsx";
+import { ENV } from "./config/env.tsx";
 
 const queryClient = new QueryClient();
 
@@ -16,7 +17,7 @@ createRoot(document.getElementById("root")!).render(
     <QueryClientProvider client={queryClient}>
       <AlertNotificationProvider>
         <AuthProvider>
-          <GoogleOAuthProvider clientId="<your_client_id>">
+          <GoogleOAuthProvider clientId={ENV.VITE_GOOGLE_CLIENT_ID}>
             <ConfigProvider theme={themeAntd}>
               <App />
             </ConfigProvider>
