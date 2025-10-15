@@ -13,6 +13,7 @@ import { internalAxiosInstance } from "../api/api-base-config";
 import { HttpStatus } from "../helpers/http-status-codes";
 import type { User } from "../types";
 import { ENV } from "../config/env";
+import { useGoogleOauth } from "../hooks/useGoogleOauth";
 
 interface AuthContextType {
   login: (token: string) => Promise<void>;
@@ -37,7 +38,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
+  //const { googleLogout } = useGoogleOauth();
   const login = useCallback(
     async (newToken: string) => {
       try {
@@ -72,6 +73,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setToken(null);
       setUser(null);
       setError(null);
+      //googleLogout();
     }
   }, [removeCookie]);
 

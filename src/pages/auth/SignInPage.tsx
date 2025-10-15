@@ -10,11 +10,13 @@ import { useAuth } from "../../hooks/AuthProvider";
 import { useAlertNotification } from "../../hooks/AlertNotification";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
+import { useGoogleOauth } from "../../hooks/useGoogleOauth";
 
 const SignInSchema = z.object({
   email: z
-    .email({ message: "Invalid email format" })
-    .nonempty({ message: "Email address is required" }),
+    .string()
+    .nonempty({ message: "Email address is required" })
+    .email({ message: "Invalid email format" }),
   password: z.string().nonempty({ message: "Password is required" }),
 });
 type SigninData = z.infer<typeof SignInSchema>;
@@ -24,6 +26,7 @@ const SignInPage: React.FC = () => {
   const { login } = useAuth();
   const openNotification = useAlertNotification();
   const navigate = useNavigate();
+  const { handleGoogleSignIn, isLoading: isGoogleLoading } = useGoogleOauth();
   const {
     register,
     handleSubmit: handleFormSubmit,
@@ -54,10 +57,6 @@ const SignInPage: React.FC = () => {
     }
   };
 
-  const handleGoogleSignIn = () => {
-    
-    console.log("Sign in with Google");
-  };
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-b from-[#2B2B2B]/90 via-[#B3B3B3]/70 to-[#D4D4D4]/50">
       {/* Back to Home Link */}
@@ -164,11 +163,20 @@ const SignInPage: React.FC = () => {
 
           {/* Google Sign In Button */}
           <button
-            onClick={handleGoogleSignIn}
+            onClick={async () => await handleGoogleSignIn()}
             type="button"
-            className="w-full flex items-center justify-center gap-3 py-3 bg-transparent text-[#FFFFFF] border-2 border-[#B3B347]/30 rounded-lg hover:bg-[#FFFFFF]/10 hover:border-[#B3B347] transition-all font-semibold shadow-lg transform hover:scale-[1.02] cursor-pointer"
+            disabled={isGoogleLoading}
+            className="w-full flex items-center justify-center gap-3 py-3 bg-transparent text-[#FFFFFF] border-2 border-[#B3B347]/30 rounded-lg hover:bg-[#FFFFFF]/10 hover:border-[#B3B347] transition-all font-semibold shadow-lg transform hover:scale-[1.02] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <GoogleIcon />
+            {isGoogleLoading ? (
+              <Spin
+                spinning={isGoogleLoading}
+                indicator={<LoadingOutlined spin />}
+                size="small"
+              />
+            ) : (
+              <GoogleIcon />
+            )}
             <span>Sign in with Google</span>
           </button>
 

@@ -140,11 +140,11 @@ const MainLayout: React.FC = () => {
       <span className="text-base hidden md:block">
         {user?.firstName} {user?.lastName}
       </span>
-      {user?.isOauth ? (
+      {user?.isOauth && user.oauthPicture ? (
         <img
-          src={logo}
+          src={user.oauthPicture}
           alt="User Profile"
-          className="h-9 w-9 rounded-full object-fit-cover mr-3"
+          className="h-9 w-9 rounded-full object-fit-cover mr-3 shadow"
         />
       ) : (
         <div className="flex flex-col items-center justify-center h-9 w-9 rounded-full object-fit-cover bg-yellow-300 text-black mr-3 border border-amber-400">
