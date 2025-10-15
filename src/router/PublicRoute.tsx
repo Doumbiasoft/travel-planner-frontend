@@ -6,8 +6,8 @@ interface PublicRouteProps {
 }
 
 const PublicRoute: React.FC<PublicRouteProps> = ({ children }) => {
-  const { user } = useAuth();
-  if (user) {
+  const { isAuthenticated } = useAuth();
+  if (isAuthenticated) {
     return <Navigate to={`/dashboard`} />;
   }
   return <>{children}</>;
