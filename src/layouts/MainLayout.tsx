@@ -51,7 +51,7 @@ const getMenuConfigurations = () => ({
       getItem("Dashboard", "/dashboard", <DashboardOutlined />),
       getItem("Search", "/search", <FileSearchOutlined />),
       getItem("Settings", "/settings", <SettingOutlined />),
-      getItem("Logout", "/logout", <PoweroffOutlined />),
+      getItem("Logout", "/signin", <PoweroffOutlined />),
     ],
     defaultOpen: [],
   },
@@ -66,7 +66,7 @@ const MainLayout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const portal = location.pathname.split("/")[1];
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
 
   const getSelectedKeys = (pathname: string): string[] => {
     return [pathname];
@@ -111,7 +111,10 @@ const MainLayout: React.FC = () => {
       window.removeEventListener("resize", handleResize);
     };
   });
-  const handleMenuClick = ({ key }: { key: string }) => {
+  const handleMenuClick = async ({ key }: { key: string }) => {
+    if (key.split("/")[1] === "signin") {
+      await logout();
+    }
     routeTo(key);
     if (isMobile) {
       setCollapsed(true);
@@ -178,11 +181,11 @@ const MainLayout: React.FC = () => {
               typeof item === "object" &&
               "key" in item &&
               typeof item.key === "string" &&
-              item.key.includes("/logout")
+              item.key.includes("/signin")
             ) {
               return {
                 ...item,
-                className: " text-pink-600",
+                className: " logout-menu-item",
               };
             }
             return item;
@@ -203,7 +206,7 @@ const MainLayout: React.FC = () => {
                 height: 64,
               }}
             />
-            {renderUserProfile()}
+            {user && renderUserProfile()}
           </div>
         </Header>
         {isMobile && !collapsed ? null : (
