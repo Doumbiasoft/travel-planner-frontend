@@ -19,3 +19,22 @@ export interface GoogleOauthData {
   oauthProvider: string;
   oauthPicture: string;
 }
+
+// Current user interface
+export interface User {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  oauthProvider: string;
+  oauthUid: string;
+  oauthPicture: string;
+  isOauth: boolean;
+  passwordResetToken: string;
+  activationToken: string;
+  isActive: boolean;
+  isAdmin: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}

@@ -10,15 +10,9 @@ import {
 import unitOfWork from "../api/unit-of-work";
 import { internalAxiosInstance } from "../api/api-base-config";
 import { HttpStatus } from "../helpers/http-status-codes";
+import type { User } from "../types";
 
 // Define a proper User type
-interface User {
-  id: string;
-  email: string;
-  firstName?: string;
-  lastName?: string;
-  [key: string]: any;
-}
 
 interface AuthContextType {
   login: (token: string) => Promise<void>;
@@ -112,6 +106,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             // Refresh failed, logout user
             setToken(null);
             setUser(null);
+            logout();
             setError("Session expired. Please login again.");
             return Promise.reject(refreshError);
           }
@@ -124,7 +119,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     return () => {
       internalAxiosInstance.interceptors.response.eject(refreshInterceptor);
     };
-  }, []); // Remove token dependency to avoid interceptor recreation
+  }, []);
 
   // Fetch user data when token changes
   useEffect(() => {
@@ -145,7 +140,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         console.error("Failed to fetch user:", err);
         setError("Failed to fetch user data");
         setUser(null);
-        // Don't clear token here - let the refresh interceptor handle it
       } finally {
         setIsLoading(false);
       }

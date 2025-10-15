@@ -30,7 +30,7 @@ class Auth {
     return await Api.post(`api/v1/auth/forgot-password`, { data });
   }
   static async changePassword(data: {
-    email: string;
+    passwordResetToken: string;
     password: string;
   }): Promise<any> {
     return await Api.post(`api/v1/auth/change-password`, { data });
