@@ -102,17 +102,17 @@ const themeAntd: ThemeConfig = {
 
     Menu: {
       itemBg: "#242424",
-      itemColor: "#96A9B6",
+      itemColor: "#ffffff",
       itemHoverBg: "#121212",
-      itemHoverColor: "#e2c51d",
+      itemHoverColor: "#FFE566",
       itemSelectedColor: "#121212",
       itemBorderRadius: 10,
-      subMenuItemSelectedColor: "#e2c51d",
-      itemSelectedBg: "#e2c51d",
+      subMenuItemSelectedColor: "#FFE566",
+      itemSelectedBg: "#FFE566",
       popupBg: "#242424",
       horizontalItemHoverColor: "#fff",
       horizontalItemSelectedColor: "#fff",
-      controlItemBgActive: "#e2c51d",
+      controlItemBgActive: "#FFE566",
       iconSize: 20,
     },
 

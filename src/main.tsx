@@ -9,21 +9,24 @@ import { AuthProvider } from "./hooks/AuthProvider.tsx";
 import themeAntd from "./styles/theme-Antd.tsx";
 import { AlertNotificationProvider } from "./hooks/AlertNotification.tsx";
 import { ENV } from "./config/env.tsx";
+import { CookiesProvider } from "react-cookie";
 
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <AlertNotificationProvider>
-        <AuthProvider>
-          <GoogleOAuthProvider clientId={ENV.VITE_GOOGLE_CLIENT_ID}>
-            <ConfigProvider theme={themeAntd}>
-              <App />
-            </ConfigProvider>
-          </GoogleOAuthProvider>
-        </AuthProvider>
-      </AlertNotificationProvider>
-    </QueryClientProvider>
+    <CookiesProvider defaultSetOptions={{ path: "/" }}>
+      <QueryClientProvider client={queryClient}>
+        <AlertNotificationProvider>
+          <AuthProvider>
+            <GoogleOAuthProvider clientId={ENV.VITE_GOOGLE_CLIENT_ID}>
+              <ConfigProvider theme={themeAntd}>
+                <App />
+              </ConfigProvider>
+            </GoogleOAuthProvider>
+          </AuthProvider>
+        </AlertNotificationProvider>
+      </QueryClientProvider>
+    </CookiesProvider>
   </StrictMode>
 );

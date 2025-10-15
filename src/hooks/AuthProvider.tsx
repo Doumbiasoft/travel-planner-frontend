@@ -7,11 +7,12 @@ import {
   useState,
   useCallback,
 } from "react";
+import { useCookies } from "react-cookie";
 import unitOfWork from "../api/unit-of-work";
 import { internalAxiosInstance } from "../api/api-base-config";
 import { HttpStatus } from "../helpers/http-status-codes";
 import type { User } from "../types";
-
+import { ENV } from "../config/env";
 
 interface AuthContextType {
   login: (token: string) => Promise<void>;
@@ -24,39 +25,55 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const TOKEN_COOKIE_NAME = "accessToken";
+
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [token, setToken] = useState<string | null>(null);
+  const [cookies, setCookie, removeCookie] = useCookies([TOKEN_COOKIE_NAME]);
+  const [token, setToken] = useState<string | null>(
+    cookies.accessToken || null
+  );
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const login = useCallback(async (newToken: string) => {
-    try {
-      setError(null);
-      setToken(newToken);
-    } catch (err) {
-      setError("Login failed");
-      setToken(null);
-      setUser(null);
-      throw err;
-    }
-  }, []);
+  const login = useCallback(
+    async (newToken: string) => {
+      try {
+        setError(null);
+        // Save token to cookie with 7 days expiration
+        const expires = new Date();
+        expires.setDate(expires.getDate() + 7);
+        setCookie(TOKEN_COOKIE_NAME, newToken, {
+          expires,
+          secure: ENV.VITE_MODE === "production",
+          sameSite: "lax",
+        });
+        setToken(newToken);
+      } catch (err) {
+        setError("Login failed");
+        setToken(null);
+        setUser(null);
+        throw err;
+      }
+    },
+    [setCookie]
+  );
 
   const logout = useCallback(async () => {
     try {
-    
       await unitOfWork.auth.logout();
     } catch (err) {
       console.error("Logout error:", err);
     } finally {
-    
+      // Remove token from cookie
+      removeCookie(TOKEN_COOKIE_NAME);
       setToken(null);
       setUser(null);
       setError(null);
     }
-  }, []);
+  }, [removeCookie]);
 
   // Set up auth interceptor to add token to requests
   useLayoutEffect(() => {
@@ -84,16 +101,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         // Check if error is 401 and we haven't already retried
         if (
           error.response?.status === HttpStatus.UNAUTHORIZED &&
-          error.response?.data?.message === "Unauthorized" &&
+          error.response?.data?.message === "Invalid token" &&
           !originalRequest._retry
         ) {
           originalRequest._retry = true;
 
           try {
             const response = await unitOfWork.auth.refreshToken();
-            const newToken = response.accessToken;
+            const newToken = response.data.accessToken;
 
-            // Update token state
+            // Save new token to cookie
+            const expires = new Date();
+            expires.setDate(expires.getDate() + 7);
+            setCookie(TOKEN_COOKIE_NAME, newToken, {
+              expires,
+              secure: ENV.VITE_MODE === "production",
+              sameSite: "lax",
+            });
+
             setToken(newToken);
 
             // Update the failed request with new token
@@ -102,7 +127,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             // Retry the original request with new token
             return internalAxiosInstance(originalRequest);
           } catch (refreshError) {
-            // Refresh failed, logout user
             setToken(null);
             setUser(null);
             logout();
@@ -118,7 +142,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     return () => {
       internalAxiosInstance.interceptors.response.eject(refreshInterceptor);
     };
-  }, [logout]);
+  }, [logout, setCookie]);
 
   // Fetch user data when token changes
   useEffect(() => {
@@ -134,7 +158,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
       try {
         const response = await unitOfWork.auth.getMe();
-        setUser(response.user);
+        setUser(response.data.user);
       } catch (err: any) {
         console.error("Failed to fetch user:", err);
         setError("Failed to fetch user data");

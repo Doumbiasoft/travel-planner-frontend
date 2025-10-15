@@ -48,8 +48,6 @@ const SignInPage: React.FC = () => {
         return;
       }
     } catch (error: any) {
-      console.log(error[0]);
-
       setError("root", { message: error[0] });
     } finally {
       setIsButtonLoading(false);
@@ -57,7 +55,7 @@ const SignInPage: React.FC = () => {
   };
 
   const handleGoogleSignIn = () => {
-    // Add Google OAuth logic here
+    
     console.log("Sign in with Google");
   };
   return (
@@ -105,7 +103,6 @@ const SignInPage: React.FC = () => {
                 title="email"
                 type="email"
                 placeholder="your.email@example.com"
-                required
               />
               {errors.email && (
                 <div className="text-red-500 text-sm">
@@ -132,7 +129,6 @@ const SignInPage: React.FC = () => {
                 title="password"
                 type="password"
                 placeholder="Enter your password"
-                required
               />
               {errors.password && (
                 <div className="text-red-500 text-sm">

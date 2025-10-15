@@ -5,9 +5,12 @@ import {
   FileSearchOutlined,
   DashboardOutlined,
   SettingOutlined,
+  PoweroffOutlined,
 } from "@ant-design/icons";
 import { Button, Layout, Menu, theme, type MenuProps } from "antd";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/AuthProvider";
+import logo from "../assets/images/travel-planner-vertical-logo.png";
 const { Header, Sider, Content, Footer } = Layout;
 
 export const isMobile = window.innerWidth < 768;
@@ -48,6 +51,7 @@ const getMenuConfigurations = () => ({
       getItem("Dashboard", "/dashboard", <DashboardOutlined />),
       getItem("Search", "/search", <FileSearchOutlined />),
       getItem("Settings", "/settings", <SettingOutlined />),
+      getItem("Logout", "/logout", <PoweroffOutlined />),
     ],
     defaultOpen: [],
   },
@@ -62,6 +66,8 @@ const MainLayout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const portal = location.pathname.split("/")[1];
+  const { user } = useAuth();
+
   const getSelectedKeys = (pathname: string): string[] => {
     return [pathname];
   };
@@ -117,6 +123,39 @@ const MainLayout: React.FC = () => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+
+  const renderLogo = () => (
+    <div className=" flex items-center justify-center pt-5 pb-2 border-b border-amber-200 mb-3">
+      <img src={logo} alt="Travel Planner logo" className="h-9" />
+      <span className="font-bold text-xl">
+        {collapsed ? "" : "Travel Planner"}
+      </span>
+    </div>
+  );
+  const renderUserProfile = () => (
+    <div className=" flex items-center justify-center gap-2">
+      <span className="text-base hidden md:block">
+        {user?.firstName} {user?.lastName}
+      </span>
+      {user?.isOauth ? (
+        <img
+          src={logo}
+          alt="User Profile"
+          className="h-9 w-9 rounded-full object-fit-cover mr-3"
+        />
+      ) : (
+        <div className="flex flex-col items-center justify-center h-9 w-9 rounded-full object-fit-cover bg-yellow-300 text-black mr-3 border border-amber-400">
+          <span className="font-bold">
+            {user?.firstName
+              .charAt(0)
+              .toUpperCase()
+              .concat(user?.lastName.charAt(0).toUpperCase())}
+          </span>
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sider
@@ -126,8 +165,7 @@ const MainLayout: React.FC = () => {
         width={230}
         collapsedWidth={isMobile ? 0 : 80}
       >
-        <div className="demo-logo-vertical mt-5 text-pink-600" />
-
+        {renderLogo()}
         <Menu
           className="tree-menu mt-4"
           theme="light"
@@ -140,11 +178,11 @@ const MainLayout: React.FC = () => {
               typeof item === "object" &&
               "key" in item &&
               typeof item.key === "string" &&
-              item.key.includes("/page-three")
+              item.key.includes("/logout")
             ) {
               return {
                 ...item,
-                className: " text-pink-600 ",
+                className: " text-pink-600",
               };
             }
             return item;
@@ -154,16 +192,19 @@ const MainLayout: React.FC = () => {
       </Sider>
       <Layout>
         <Header style={{ padding: 0, background: colorBgContainer }}>
-          <Button
-            type="text"
-            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            onClick={() => setCollapsed(!collapsed)}
-            style={{
-              fontSize: "16px",
-              width: 64,
-              height: 64,
-            }}
-          />
+          <div className="flex flex-row justify-between items-center">
+            <Button
+              type="text"
+              icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+              onClick={() => setCollapsed(!collapsed)}
+              style={{
+                fontSize: "16px",
+                width: 64,
+                height: 64,
+              }}
+            />
+            {renderUserProfile()}
+          </div>
         </Header>
         {isMobile && !collapsed ? null : (
           <>

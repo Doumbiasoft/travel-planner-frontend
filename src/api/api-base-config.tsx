@@ -38,14 +38,17 @@ internalAxiosInstance.interceptors.request.use(
       startTime: new Date().getTime(),
     };
     const startTime = new Date().toLocaleString();
-    console.log(
-      `⏳ Internal API Request is starting at ${startTime}. (based on local time)`
-    );
-    console.log(
-      `⏳ Method : ${req.method?.toUpperCase()} Request: ${
-        req.baseURL + "/" + req.url
-      }. (based on local time)`
-    );
+    if (ENV.VITE_MODE === "development") {
+      console.log(
+        `⏳ Internal API Request is starting at ${startTime}. (based on local time)`
+      );
+      console.log(
+        `⏳ Method : ${req.method?.toUpperCase()} Request: ${
+          req.baseURL + "/" + req.url
+        }. (based on local time)`
+      );
+    }
+
     return req;
   },
   (error) => {
@@ -87,14 +90,17 @@ externalAxiosInstance.interceptors.request.use(
       startTime: new Date().getTime(),
     };
     const startTime = new Date().toLocaleString();
-    console.log(
-      `⏳ External API Request is starting at ${startTime}. (based on local time)`
-    );
-    console.log(
-      `⏳ Method :${req.method?.toUpperCase()} Request: ${
-        req.url
-      }. (based on local time)`
-    );
+    if (ENV.VITE_MODE === "development") {
+      console.log(
+        `⏳ External API Request is starting at ${startTime}. (based on local time)`
+      );
+      console.log(
+        `⏳ Method :${req.method?.toUpperCase()} Request: ${
+          req.url
+        }. (based on local time)`
+      );
+    }
+
     return req;
   },
   (error) => {
