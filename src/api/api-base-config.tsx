@@ -20,7 +20,7 @@ const internalAxiosInstance = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials: true, // Enable cookies for refresh token (if using httpOnly cookies)
+  withCredentials: true, // Enable cookies for refresh token for httpOnly cookies
 });
 
 // External API instance (third-party APIs)
@@ -32,7 +32,6 @@ const externalAxiosInstance = axios.create({
 });
 
 // Add logging interceptors to internal API instance
-// NOTE: Auth and refresh interceptors are added in AuthProvider to avoid conflicts
 internalAxiosInstance.interceptors.request.use(
   (req) => {
     req.metadata = {
@@ -77,7 +76,6 @@ internalAxiosInstance.interceptors.response.use(
         `❌ Internal API Request took ${error.config.metadata.durationInMS} milliseconds.`
       );
     }
-    // Don't throw here - let AuthProvider's refresh interceptor handle it first
     return Promise.reject(error);
   }
 );
@@ -215,45 +213,50 @@ class Api {
     endpoint: string,
     params: Record<string, any> = {},
     headers: Record<string, string> = {},
+    retries: number = 1,
     timeout: number = 10000
   ): Promise<T> {
-    return Api.request<T>(endpoint, params, "get", headers, timeout);
+    return Api.request<T>(endpoint, params, "get", headers, retries, timeout);
   }
 
   static post<T>(
     endpoint: string,
     data: Record<string, any> = {},
     headers: Record<string, string> = {},
+    retries: number = 1,
     timeout: number = 10000
   ): Promise<T> {
-    return Api.request<T>(endpoint, data, "post", headers, timeout);
+    return Api.request<T>(endpoint, data, "post", headers, retries, timeout);
   }
 
   static put<T>(
     endpoint: string,
     data: Record<string, any> = {},
     headers: Record<string, string> = {},
+    retries: number = 1,
     timeout: number = 10000
   ): Promise<T> {
-    return Api.request<T>(endpoint, data, "put", headers, timeout);
+    return Api.request<T>(endpoint, data, "put", headers, retries, timeout);
   }
 
   static patch<T>(
     endpoint: string,
     data: Record<string, any> = {},
     headers: Record<string, string> = {},
+    retries: number = 1,
     timeout: number = 10000
   ): Promise<T> {
-    return Api.request<T>(endpoint, data, "patch", headers, timeout);
+    return Api.request<T>(endpoint, data, "patch", headers, retries, timeout);
   }
 
   static delete<T>(
     endpoint: string,
     data: Record<string, any> = {},
     headers: Record<string, string> = {},
+    retries: number = 1,
     timeout: number = 10000
   ): Promise<T> {
-    return Api.request<T>(endpoint, data, "delete", headers, timeout);
+    return Api.request<T>(endpoint, data, "delete", headers, retries, timeout);
   }
 
   /** External API HTTP Helper Methods */
@@ -261,45 +264,71 @@ class Api {
     url: string,
     params: Record<string, any> = {},
     headers: Record<string, string> = {},
+    retries: number = 3,
     timeout: number = 10000
   ): Promise<T> {
-    return Api.externalRequest<T>(url, params, "get", headers, timeout);
+    return Api.externalRequest<T>(
+      url,
+      params,
+      "get",
+      headers,
+      retries,
+      timeout
+    );
   }
 
   static externalPost<T>(
     url: string,
     data: Record<string, any> = {},
     headers: Record<string, string> = {},
+    retries: number = 3,
     timeout: number = 10000
   ): Promise<T> {
-    return Api.externalRequest<T>(url, data, "post", headers, timeout);
+    return Api.externalRequest<T>(url, data, "post", headers, retries, timeout);
   }
 
   static externalPut<T>(
     url: string,
     data: Record<string, any> = {},
     headers: Record<string, string> = {},
+    retries: number = 3,
     timeout: number = 10000
   ): Promise<T> {
-    return Api.externalRequest<T>(url, data, "put", headers, timeout);
+    return Api.externalRequest<T>(url, data, "put", headers, retries, timeout);
   }
 
   static externalPatch<T>(
     url: string,
     data: Record<string, any> = {},
     headers: Record<string, string> = {},
+    retries: number = 3,
     timeout: number = 10000
   ): Promise<T> {
-    return Api.externalRequest<T>(url, data, "patch", headers, timeout);
+    return Api.externalRequest<T>(
+      url,
+      data,
+      "patch",
+      headers,
+      retries,
+      timeout
+    );
   }
 
   static externalDelete<T>(
     url: string,
     data: Record<string, any> = {},
     headers: Record<string, string> = {},
+    retries: number = 3,
     timeout: number = 10000
   ): Promise<T> {
-    return Api.externalRequest<T>(url, data, "delete", headers, timeout);
+    return Api.externalRequest<T>(
+      url,
+      data,
+      "delete",
+      headers,
+      retries,
+      timeout
+    );
   }
 }
 

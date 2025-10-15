@@ -125,7 +125,7 @@ const LandingPage: React.FC = () => {
             {/* Feature 3 */}
             <div className="bg-[#FFFFFF] backdrop-blur-md rounded-xl p-8 hover:shadow-xl transition-all">
               <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center">
-                <CircleDollarSign className={`w-8 h-8 text-purple-600`} />
+                <CircleDollarSign className={`w-8 h-8 text-gray-800`} />
               </div>
               <h3 className="text-xl font-bold text-[#2B2B2B] mb-3">
                 Budget Management

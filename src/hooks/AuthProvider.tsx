@@ -12,7 +12,6 @@ import { internalAxiosInstance } from "../api/api-base-config";
 import { HttpStatus } from "../helpers/http-status-codes";
 import type { User } from "../types";
 
-// Define a proper User type
 
 interface AuthContextType {
   login: (token: string) => Promise<void>;
@@ -47,12 +46,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const logout = useCallback(async () => {
     try {
-      // Call logout endpoint if needed
+    
       await unitOfWork.auth.logout();
     } catch (err) {
       console.error("Logout error:", err);
     } finally {
-      // Always clear local state even if API call fails
+    
       setToken(null);
       setUser(null);
       setError(null);
@@ -119,7 +118,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     return () => {
       internalAxiosInstance.interceptors.response.eject(refreshInterceptor);
     };
-  }, []);
+  }, [logout]);
 
   // Fetch user data when token changes
   useEffect(() => {
