@@ -90,12 +90,12 @@ const SignUpPage: React.FC = () => {
     }
   };
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gray-100 py-12">
+    <div className="min-h-screen w-full flex flex-col items-center justify-center  bg-[#D4D4D4]/50 backdrop-blur-md py-12">
       {/* Back to Home Link */}
       <div className="absolute top-8 left-8">
         <Link
           to="/"
-          className="flex items-center gap-2 text-black hover:text-[#f7d749] transition-colors"
+          className="flex items-center gap-2 text-white hover:text-[#f7d749] transition-colors"
         >
           <span className="text-2xl">←</span>
           <span className="font-medium">Back to Home</span>
@@ -113,7 +113,7 @@ const SignUpPage: React.FC = () => {
           <h1 className="text-5xl font-bold text-[#f7d83d] mb-2">
             Create Account
           </h1>
-          <p className="text-gray-500">Start planning your dream vacation</p>
+          <p className="text-white">Start planning your dream vacation</p>
           {errors.root && (
             <div className="text-red-500 text-md mb-5 w-full text-center">
               <h4>{errors.root?.message}</h4>

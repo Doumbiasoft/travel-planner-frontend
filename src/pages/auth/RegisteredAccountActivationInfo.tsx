@@ -24,12 +24,12 @@ const RegisteredAccountActivationInfo: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center bg-gray-100">
+    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-[#D4D4D4]/50 backdrop-blur-md">
       {/* Go to login */}
       <div className="absolute top-8 left-8">
         <Link
           to="/signin"
-          className="flex items-center gap-2 text-black hover:text-[#f7d749] transition-colors"
+          className="flex items-center gap-2 text-white hover:text-[#f7d749] transition-colors"
         >
           <span className="text-2xl">←</span>
           <span className="font-medium">Go to Sign In Page</span>
@@ -53,17 +53,10 @@ const RegisteredAccountActivationInfo: React.FC = () => {
                     <img src={valid} alt="Avatar" className="w-20 h-20" />
                   </div>
                   <>
-                    <h1 className="text-3xl font-semibold mb-2 text-center text-black">
+                    <h1 className="text-3xl font-semibold mb-2 text-center text-white">
                       An e-mail has been sent to your email address!
                     </h1>
-                    {/* <h1 className="text-3xl font-semibold mb-2 text-center">
-                      An e-mail has been sent to your email address!
-                    </h1> */}
-                    {/* <p className="text-yellow-300 mb-6 text-center">
-                      Welcome to Travel Planner, you can now access all
-                      functionalities.
-                    </p> */}
-                    <p className="text-gray-500 mb-6 text-center">
+                    <p className="text-gray-300 mb-6 text-center">
                       Please check your inbox to activate your account.
                     </p>
                   </>

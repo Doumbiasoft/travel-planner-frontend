@@ -59,13 +59,12 @@ const SignInPage: React.FC = () => {
   };
 
   return (
-    // <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-b from-[#2B2B2B]/90 via-[#B3B3B3]/70 to-[#D4D4D4]/50">
-    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gray-100">
+    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-[#D4D4D4]/50 backdrop-blur-md">
       {/* Back to Home Link */}
       <div className="absolute top-8 left-8">
         <Link
           to="/"
-          className="flex items-center gap-2 text-black hover:text-[#f7d749]  transition-colors"
+          className="flex items-center gap-2 text-white hover:text-[#f7d749] transition-colors"
         >
           <span className="text-2xl">←</span>
           <span className="font-medium">Back to Home</span>
@@ -83,7 +82,7 @@ const SignInPage: React.FC = () => {
           <h1 className="text-5xl font-bold text-[#f7d83d] mb-2">
             Welcome Back
           </h1>
-          <p className="text-gray-500">Sign in to continue your journey</p>
+          <p className="text-white">Sign in to continue your journey</p>
           {errors.root && (
             <div className="text-red-500 text-md mb-5 w-full text-center">
               <h4>{errors.root?.message}</h4>
@@ -119,7 +118,7 @@ const SignInPage: React.FC = () => {
                   Password
                 </span>
                 <Link
-                  to="/forgot-password"
+                  to="/account/forgot-password"
                   className="text-sm text-[#FFFF66] hover:text-[#FFE566] transition-colors"
                 >
                   Forgot Password?

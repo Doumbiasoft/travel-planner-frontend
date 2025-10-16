@@ -11,6 +11,8 @@ import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
 import ActivateAccountPage from "../pages/auth/ActivateAccountPage";
 import RegisteredAccountActivationInfo from "../pages/auth/RegisteredAccountActivationInfo";
+import ForgotPassword from "../pages/auth/ForgotPassword";
+import ChangeAccountPassword from "../pages/auth/ChangeAccountPassword";
 
 const routes: RouteObject[] = [
   {
@@ -81,6 +83,22 @@ const routes: RouteObject[] = [
     element: (
       <PublicRoute>
         <RegisteredAccountActivationInfo />
+      </PublicRoute>
+    ),
+  },
+  {
+    path: "/account/forgot-password",
+    element: (
+      <PublicRoute>
+        <ForgotPassword />
+      </PublicRoute>
+    ),
+  },
+  {
+    path: "/account/change-password/:token",
+    element: (
+      <PublicRoute>
+        <ChangeAccountPassword />
       </PublicRoute>
     ),
   },

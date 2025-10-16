@@ -29,11 +29,16 @@ class Auth {
   static async forgotPassword(data: { email: string }): Promise<any> {
     return await Api.post(`api/v1/auth/forgot-password`, data);
   }
+  static async changePasswordTokenValidation(data: {
+    passwordResetToken: string;
+  }): Promise<any> {
+    return await Api.post(`api/v1/auth/change-password-token-validation`, data);
+  }
   static async changePassword(data: {
     passwordResetToken: string;
     password: string;
   }): Promise<any> {
-    return await Api.post(`api/v1/auth/change-password`, data);
+    return await Api.patch(`api/v1/auth/change-password`, data);
   }
   static async verifyCurrentPassword(data: { password: string }): Promise<any> {
     return await Api.post(`api/v1/auth/verify-current-password`, data);

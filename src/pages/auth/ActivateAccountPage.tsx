@@ -42,15 +42,15 @@ const ActivateAccountPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center bg-gray-100">
+    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-[#D4D4D4]/50 backdrop-blur-md">
       {/* Go to login */}
       <div className="absolute top-8 left-8">
         <Link
           to="/signin"
-          className="flex items-center gap-2 text-black hover:text-[#f7d749] transition-colors"
+          className="flex items-center gap-2 text-white hover:text-[#f7d749] transition-colors"
         >
           <span className="text-2xl">←</span>
-          <span className="font-medium">Go to Sign In Page</span>
+          <span className="font-medium">Go to Sign In</span>
         </Link>
       </div>
 
@@ -86,7 +86,7 @@ const ActivateAccountPage: React.FC = () => {
                         className="w-full flex gap-2 items-center justify-center py-3 px-8 bg-[#FFE566] text-[#2B2B2B] rounded-lg hover:bg-[#FFFF66] transition-all font-semibold text-lg shadow-lg transform hover:scale-[1.02] cursor-pointer"
                       >
                         <ArrowLeft />
-                        Go to Sign In Page
+                        Go to Sign In
                       </button>
                     </div>
                   </div>
@@ -103,10 +103,10 @@ const ActivateAccountPage: React.FC = () => {
                       <img src={valid} alt="Avatar" className="w-20 h-20" />
                     </div>
                     <>
-                      <h1 className="text-3xl font-semibold mb-2 text-center text-black">
+                      <h1 className="text-3xl font-semibold mb-2 text-center text-white">
                         Successfully Activated your account!
                       </h1>
-                      <p className="text-gray-500 mb-6 text-center">
+                      <p className="text-gray-300 mb-6 text-center">
                         Welcome to Travel Planner, you can now access all
                         functionalities.
                       </p>
@@ -121,7 +121,7 @@ const ActivateAccountPage: React.FC = () => {
                         className="w-full flex gap-2 items-center justify-center py-3 px-8 bg-[#FFE566] text-[#2B2B2B] rounded-lg hover:bg-[#FFFF66] transition-all font-semibold text-lg shadow-lg transform hover:scale-[1.02] cursor-pointer"
                       >
                         <ArrowLeft />
-                        Go to Sign In Page
+                        Go to Sign In
                       </button>
                     </div>
                   </div>
