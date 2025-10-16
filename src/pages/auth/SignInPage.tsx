@@ -26,7 +26,8 @@ const SignInPage: React.FC = () => {
   const { login } = useAuth();
   const openNotification = useAlertNotification();
   const navigate = useNavigate();
-  const { handleGoogleSignIn, isLoading: isGoogleLoading } = useGoogleOauth(login);
+  const { handleGoogleSignIn, isLoading: isGoogleLoading } =
+    useGoogleOauth(login);
   const {
     register,
     handleSubmit: handleFormSubmit,
@@ -58,12 +59,13 @@ const SignInPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-b from-[#2B2B2B]/90 via-[#B3B3B3]/70 to-[#D4D4D4]/50">
+    // <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-b from-[#2B2B2B]/90 via-[#B3B3B3]/70 to-[#D4D4D4]/50">
+    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gray-100">
       {/* Back to Home Link */}
       <div className="absolute top-8 left-8">
         <Link
           to="/"
-          className="flex items-center gap-2 text-[#FFFFFF] hover:text-[#FFFF66] transition-colors"
+          className="flex items-center gap-2 text-black hover:text-[#f7d749]  transition-colors"
         >
           <span className="text-2xl">←</span>
           <span className="font-medium">Back to Home</span>
@@ -74,14 +76,14 @@ const SignInPage: React.FC = () => {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
             <img src={logo} alt="" className="w-16" />
-            <span className="text-[#FFFFFF] font-bold text-2xl">
+            <span className="text-black font-bold text-2xl">
               Travel Planner
             </span>
           </div>
-          <h1 className="text-5xl font-bold text-[#FFE566] mb-2">
+          <h1 className="text-5xl font-bold text-[#f7d83d] mb-2">
             Welcome Back
           </h1>
-          <p className="text-[#D4D4D4]">Sign in to continue your journey</p>
+          <p className="text-gray-500">Sign in to continue your journey</p>
           {errors.root && (
             <div className="text-red-500 text-md mb-5 w-full text-center">
               <h4>{errors.root?.message}</h4>
@@ -89,7 +91,7 @@ const SignInPage: React.FC = () => {
           )}
         </div>
 
-        <div className="bg-gradient-to-b from-[#2B2B2B] via-[#2B2B2B]/85 to-[#2B2B2B]/60 backdrop-blur-md rounded-xl p-8 shadow-2xl">
+        <div className="bg-gradient-to-b from-[#2B2B2B] via-[#2B2B2B]/85 to-[#2B2B2B]/60 backdrop-blur-md rounded-xl p-8 shadow-xl">
           <form
             onSubmit={handleFormSubmit(handleSubmit)}
             className="flex flex-col gap-6"
@@ -102,6 +104,7 @@ const SignInPage: React.FC = () => {
                 title="email"
                 type="email"
                 placeholder="your.email@example.com"
+                autoComplete="username"
               />
               {errors.email && (
                 <div className="text-red-500 text-sm">
@@ -128,6 +131,7 @@ const SignInPage: React.FC = () => {
                 title="password"
                 type="password"
                 placeholder="Enter your password"
+                autoComplete="current-password"
               />
               {errors.password && (
                 <div className="text-red-500 text-sm">

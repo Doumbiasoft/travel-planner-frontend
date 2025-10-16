@@ -10,6 +10,7 @@ import SettingsPage from "../pages/SettingsPage";
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
 import ActivateAccountPage from "../pages/auth/ActivateAccountPage";
+import RegisteredAccountActivationInfo from "../pages/auth/RegisteredAccountActivationInfo";
 
 const routes: RouteObject[] = [
   {
@@ -72,6 +73,14 @@ const routes: RouteObject[] = [
     element: (
       <PublicRoute>
         <ActivateAccountPage />
+      </PublicRoute>
+    ),
+  },
+  {
+    path: "/account/created",
+    element: (
+      <PublicRoute>
+        <RegisteredAccountActivationInfo />
       </PublicRoute>
     ),
   },

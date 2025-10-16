@@ -62,10 +62,11 @@ internalAxiosInstance.interceptors.response.use(
       res.config.metadata.endTime = new Date().getTime();
       res.config.metadata.durationInMS =
         res.config.metadata.endTime - res.config.metadata.startTime;
-
-      console.log(
-        `✅ Internal API Request took ${res.config.metadata.durationInMS} milliseconds.`
-      );
+      if (ENV.VITE_MODE === "development") {
+        console.log(
+          `✅ Internal API Request took ${res.config.metadata.durationInMS} milliseconds.`
+        );
+      }
     }
     return res;
   },
@@ -74,10 +75,11 @@ internalAxiosInstance.interceptors.response.use(
       error.config.metadata.endTime = new Date().getTime();
       error.config.metadata.durationInMS =
         error.config.metadata.endTime - error.config.metadata.startTime;
-
-      console.log(
-        `❌ Internal API Request took ${error.config.metadata.durationInMS} milliseconds.`
-      );
+      if (ENV.VITE_MODE === "development") {
+        console.log(
+          `❌ Internal API Request took ${error.config.metadata.durationInMS} milliseconds.`
+        );
+      }
     }
     return Promise.reject(error);
   }
@@ -114,10 +116,11 @@ externalAxiosInstance.interceptors.response.use(
       res.config.metadata.endTime = new Date().getTime();
       res.config.metadata.durationInMS =
         res.config.metadata.endTime - res.config.metadata.startTime;
-
-      console.log(
-        `⏳ External API Request took ${res.config.metadata.durationInMS} milliseconds.`
-      );
+      if (ENV.VITE_MODE === "development") {
+        console.log(
+          `⏳ External API Request took ${res.config.metadata.durationInMS} milliseconds.`
+        );
+      }
     }
     return res;
   },
@@ -126,10 +129,11 @@ externalAxiosInstance.interceptors.response.use(
       error.config.metadata.endTime = new Date().getTime();
       error.config.metadata.durationInMS =
         error.config.metadata.endTime - error.config.metadata.startTime;
-
-      console.log(
-        `⏳ External API Request took ${error.config.metadata.durationInMS} milliseconds.`
-      );
+      if (ENV.VITE_MODE === "development") {
+        console.log(
+          `⏳ External API Request took ${error.config.metadata.durationInMS} milliseconds.`
+        );
+      }
     }
     throw error;
   }

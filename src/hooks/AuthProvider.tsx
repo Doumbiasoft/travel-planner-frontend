@@ -160,7 +160,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
       try {
         const response = await unitOfWork.auth.getMe();
-        setUser(response.data.user);
+        if (response.data.user) {
+          setUser(response.data.user);
+        } else {
+          logout();
+        }
       } catch (err: any) {
         console.error("Failed to fetch user:", err);
         setError("Failed to fetch user data");

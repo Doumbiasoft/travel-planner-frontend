@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { useGoogleLogin, googleLogout } from "@react-oauth/google";
+import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import { useAlertNotification } from "./AlertNotification";
 import { useNavigate } from "react-router-dom";
 import unitOfWork from "../api/unit-of-work";
+import { ENV } from "../config/env";
 
 interface GoogleUserInfo {
   email: string;
@@ -47,7 +48,9 @@ export const useGoogleOauth = (login: (token: string) => Promise<void>) => {
             },
           }
         );
-        console.log(googleUser);
+        if (ENV.VITE_MODE === "development") {
+          console.log(googleUser);
+        }
 
         const response = await unitOfWork.auth.signInWithGoogle({
           email: googleUser.email,
@@ -85,6 +88,5 @@ export const useGoogleOauth = (login: (token: string) => Promise<void>) => {
   return {
     handleGoogleSignIn,
     isLoading,
-    googleLogout,
   };
 };

@@ -54,6 +54,7 @@ const SignUpPage: React.FC = () => {
     useGoogleOauth(login);
   const {
     register,
+    reset,
     handleSubmit: handleFormSubmit,
     formState: { errors },
     clearErrors,
@@ -72,13 +73,14 @@ const SignUpPage: React.FC = () => {
       };
       const response = await unitOfWork.auth.register(f_data);
       if (response.success === true) {
-        //await login(response.data.accessToken);
         openNotification("Account created successfully", "success");
         clearErrors();
-        //navigate("/account-created");
+        navigate("/account/created");
+        reset();
       } else {
         setIsButtonLoading(false);
         setError("root", { message: "Failed to create an account." });
+        openNotification("Failed to create an account", "error");
         return;
       }
     } catch (error: any) {
@@ -88,12 +90,12 @@ const SignUpPage: React.FC = () => {
     }
   };
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-b from-[#2B2B2B]/90 via-[#B3B3B3]/70 to-[#D4D4D4]/50 py-12">
+    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gray-100 py-12">
       {/* Back to Home Link */}
       <div className="absolute top-8 left-8">
         <Link
           to="/"
-          className="flex items-center gap-2 text-[#FFFFFF] hover:text-[#FFFF66] transition-colors"
+          className="flex items-center gap-2 text-black hover:text-[#f7d749] transition-colors"
         >
           <span className="text-2xl">←</span>
           <span className="font-medium">Back to Home</span>
@@ -104,14 +106,14 @@ const SignUpPage: React.FC = () => {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
             <img src={logo} alt="" className="w-16" />
-            <span className="text-[#FFFFFF] font-bold text-2xl">
+            <span className="text-black font-bold text-2xl">
               Travel Planner
             </span>
           </div>
-          <h1 className="text-5xl font-bold text-[#FFE566] mb-2">
+          <h1 className="text-5xl font-bold text-[#f7d83d] mb-2">
             Create Account
           </h1>
-          <p className="text-[#D4D4D4]">Start planning your dream vacation</p>
+          <p className="text-gray-500">Start planning your dream vacation</p>
           {errors.root && (
             <div className="text-red-500 text-md mb-5 w-full text-center">
               <h4>{errors.root?.message}</h4>
@@ -119,7 +121,7 @@ const SignUpPage: React.FC = () => {
           )}
         </div>
 
-        <div className="bg-gradient-to-b from-[#2B2B2B] via-[#2B2B2B]/85 to-[#2B2B2B]/60 backdrop-blur-md rounded-xl p-8 shadow-2xl">
+        <div className="bg-gradient-to-b from-[#2B2B2B] via-[#2B2B2B]/85 to-[#2B2B2B]/60 backdrop-blur-md rounded-xl p-8 shadow-xl">
           <form
             onSubmit={handleFormSubmit(handleSubmit)}
             className="flex flex-col gap-5"
@@ -167,6 +169,7 @@ const SignUpPage: React.FC = () => {
                 className="w-full px-4 py-3 rounded-lg border-2 border-[#B3B347]/30 bg-[#FFFFFF]/10 text-[#FFFFFF] placeholder-[#D4D4D4] focus:outline-none focus:ring-2 focus:ring-[#FFFF66] focus:border-[#B3B347] transition-all"
                 type="email"
                 placeholder="your.email@example.com"
+                autoComplete="username"
               />
               {errors.email && (
                 <div className="text-red-500 text-sm">
@@ -184,6 +187,7 @@ const SignUpPage: React.FC = () => {
                 className="w-full px-4 py-3 rounded-lg border-2 border-[#B3B347]/30 bg-[#FFFFFF]/10 text-[#FFFFFF] placeholder-[#D4D4D4] focus:outline-none focus:ring-2 focus:ring-[#FFFF66] focus:border-[#B3B347] transition-all"
                 type="password"
                 placeholder="Create a strong password"
+                autoComplete="new-password"
               />
               {errors.password && (
                 <div className="text-red-500 text-sm">
@@ -201,6 +205,7 @@ const SignUpPage: React.FC = () => {
                 className="w-full px-4 py-3 rounded-lg border-2 border-[#B3B347]/30 bg-[#FFFFFF]/10 text-[#FFFFFF] placeholder-[#D4D4D4] focus:outline-none focus:ring-2 focus:ring-[#FFFF66] focus:border-[#B3B347] transition-all"
                 type="password"
                 placeholder="Re-enter your password"
+                autoComplete="new-password"
               />
               {errors.confirmPassword && (
                 <div className="text-red-500 text-sm">

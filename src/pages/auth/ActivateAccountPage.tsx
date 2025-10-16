@@ -42,12 +42,12 @@ const ActivateAccountPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center  bg-gradient-to-b from-[#2B2B2B]/90 via-[#B3B3B3]/70 to-[#D4D4D4]/50">
+    <div className="min-h-screen w-full flex flex-col items-center bg-gray-100">
       {/* Go to login */}
       <div className="absolute top-8 left-8">
         <Link
           to="/signin"
-          className="flex items-center gap-2 text-[#FFFFFF] hover:text-[#FFFF66] transition-colors"
+          className="flex items-center gap-2 text-black hover:text-[#f7d749] transition-colors"
         >
           <span className="text-2xl">←</span>
           <span className="font-medium">Go to Sign In Page</span>
@@ -65,7 +65,7 @@ const ActivateAccountPage: React.FC = () => {
                   <div className="flex flex-col gap-3 justify-center items-center mt-10">
                     <div className="flex flex-col gap-2 items-center justify-center mb-10 mr-10">
                       <img src={logo} alt="logo" className="w-28 h-28" />
-                      <h3 className="text-[#FFFFFF] font-bold text-5xl">
+                      <h3 className="text-black font-bold text-5xl">
                         Travel Planner
                       </h3>
                     </div>
@@ -95,7 +95,7 @@ const ActivateAccountPage: React.FC = () => {
                   <div className="flex flex-col gap-3 justify-center items-center mt-10">
                     <div className="flex flex-col gap-2 items-center justify-center mb-10 mr-10">
                       <img src={logo} alt="logo" className="w-28 h-28" />
-                      <h3 className="text-[#FFFFFF] font-bold text-5xl">
+                      <h3 className="text-black font-bold text-5xl">
                         Travel Planner
                       </h3>
                     </div>
@@ -103,10 +103,10 @@ const ActivateAccountPage: React.FC = () => {
                       <img src={valid} alt="Avatar" className="w-20 h-20" />
                     </div>
                     <>
-                      <h1 className="text-3xl font-semibold mb-2 text-center">
+                      <h1 className="text-3xl font-semibold mb-2 text-center text-black">
                         Successfully Activated your account!
                       </h1>
-                      <p className="text-yellow-300 mb-6 text-center">
+                      <p className="text-gray-500 mb-6 text-center">
                         Welcome to Travel Planner, you can now access all
                         functionalities.
                       </p>
