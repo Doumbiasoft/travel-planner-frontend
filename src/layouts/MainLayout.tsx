@@ -10,10 +10,9 @@ import {
 import { Button, Layout, Menu, theme, type MenuProps } from "antd";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/AuthProvider";
+import { useMediaQuery } from "../hooks/useMediaQuery";
 import logo from "../assets/images/travel-planner-vertical-logo.png";
 const { Header, Sider, Content, Footer } = Layout;
-
-export const isMobile = window.innerWidth < 768;
 
 // Type definitions for menu items and options
 type MenuItem = Required<MenuProps>["items"][number];
@@ -62,6 +61,7 @@ const getMenuConfigurations = () => ({
 });
 
 const MainLayout: React.FC = () => {
+  const isMobile = useMediaQuery(768);
   const [collapsed, setCollapsed] = useState(isMobile);
   const navigate = useNavigate();
   const location = useLocation();
@@ -95,31 +95,19 @@ const MainLayout: React.FC = () => {
   const routeTo = (path: string) => {
     navigate(path);
   };
-  useEffect(() => {
-    const handleResize = () => {
-      if (isMobile) {
-        setCollapsed(true);
-      } else {
-        setCollapsed(false);
-      }
-    };
-    window.addEventListener("load", handleResize);
-    window.addEventListener("resize", handleResize);
 
-    return () => {
-      window.removeEventListener("load", handleResize);
-      window.removeEventListener("resize", handleResize);
-    };
-  });
+  // Auto-collapse sidebar based on screen size
+  useEffect(() => {
+    setCollapsed(isMobile);
+  }, [isMobile]);
   const handleMenuClick = async ({ key }: { key: string }) => {
     if (key.split("/")[1] === "signin") {
       await logout();
     }
     routeTo(key);
+    // Auto-collapse sidebar on mobile after menu click
     if (isMobile) {
       setCollapsed(true);
-    } else {
-      setCollapsed(false);
     }
   };
 
@@ -136,8 +124,9 @@ const MainLayout: React.FC = () => {
     </div>
   );
   const renderUserProfile = () => (
-    <div className=" flex items-center justify-center gap-2">
-      <span className="text-base hidden md:block">
+    // {"hidden md:block"}
+    <div className="flex items-center justify-center gap-2">
+      <span className="text-sm md:text-base ">
         {user?.firstName} {user?.lastName}
       </span>
       {user?.isOauth && user.oauthPicture ? (
@@ -147,7 +136,7 @@ const MainLayout: React.FC = () => {
           className="h-9 w-9 rounded-full object-fit-cover mr-3 shadow"
         />
       ) : (
-        <div className="flex flex-col items-center justify-center h-9 w-9 rounded-full object-fit-cover bg-yellow-300 text-black mr-3 border border-amber-400">
+        <div className="flex flex-col items-center justify-center h-9 w-9 rounded-full object-fit-cover bg-yellow-300 text-black mr-3 border border-amber-400 shadow">
           <span className="font-bold">
             {user?.firstName
               .charAt(0)
@@ -195,7 +184,7 @@ const MainLayout: React.FC = () => {
       </Sider>
       <Layout>
         <Header style={{ padding: 0, background: colorBgContainer }}>
-          <div className="flex flex-row justify-between items-center">
+          <div className="flex flex-row justify-between items-center w-full">
             <Button
               type="text"
               icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
