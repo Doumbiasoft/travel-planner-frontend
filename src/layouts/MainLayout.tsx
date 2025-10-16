@@ -71,7 +71,7 @@ const MainLayout: React.FC = () => {
   const getSelectedKeys = (pathname: string): string[] => {
     return [pathname];
   };
-  // Initialize menu configuration based on portal
+
   const menuConfigs = getMenuConfigurations();
   const configInit =
     menuConfigs[portal as keyof typeof menuConfigs] || menuConfigs.user;
@@ -80,7 +80,7 @@ const MainLayout: React.FC = () => {
     defaultOpen: configInit.defaultOpen,
     selectedKeys: getSelectedKeys(location.pathname),
   });
-  // Effect to update menu options when the route changes or message count changes
+
   useEffect(() => {
     const menuConfigs = getMenuConfigurations();
     const config =
