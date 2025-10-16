@@ -9,6 +9,7 @@ import SignUpPage from "../pages/auth/SignUpPage";
 import SettingsPage from "../pages/SettingsPage";
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
+import ActivateAccountPage from "../pages/auth/ActivateAccountPage";
 
 const routes: RouteObject[] = [
   {
@@ -63,6 +64,14 @@ const routes: RouteObject[] = [
     element: (
       <PublicRoute>
         <SignUpPage />
+      </PublicRoute>
+    ),
+  },
+  {
+    path: "/account/activate/:token",
+    element: (
+      <PublicRoute>
+        <ActivateAccountPage />
       </PublicRoute>
     ),
   },
