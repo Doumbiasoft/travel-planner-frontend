@@ -192,7 +192,7 @@ const LandingPage: React.FC = () => {
           </p>
           <Link
             to="/signup"
-            className="inline-block px-12 py-5 bg-[#FFE566] text-[#2B2B2B] rounded-lg hover:bg-[#FFFF66] transition-all transform hover:scale-105 font-bold text-xl shadow-lg cursor-pointer"
+            className="inline-block px-12 py-5 bg-[#FFE566] text-[#2B2B2B] rounded-lg hover:bg-[#FFFF66] transition-all transform hover:scale-105 font-bold text-xl shadow cursor-pointer"
           >
             Create Free Account
           </Link>
