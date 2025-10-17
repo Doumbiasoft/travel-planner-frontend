@@ -149,13 +149,21 @@ const MainLayout: React.FC = () => {
   );
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
+    <Layout style={{ height: "100vh", overflow: "hidden" }}>
       <Sider
         trigger={null}
         collapsible
         collapsed={collapsed}
         width={230}
         collapsedWidth={isMobile ? 0 : 80}
+        style={{
+          overflow: "auto",
+          height: "100vh",
+          position: "fixed",
+          left: 0,
+          top: 0,
+          bottom: 0,
+        }}
       >
         {renderLogo()}
         <Menu
@@ -182,9 +190,24 @@ const MainLayout: React.FC = () => {
           onClick={handleMenuClick}
         />
       </Sider>
-      <Layout>
-        <Header style={{ padding: 0, background: colorBgContainer }}>
-          <div className="flex flex-row justify-between items-center w-full">
+      <Layout
+        style={{
+          marginLeft: collapsed ? (isMobile ? 0 : 80) : 230,
+          height: "100vh",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <Header
+          style={{
+            padding: 0,
+            background: colorBgContainer,
+            position: "sticky",
+            top: 0,
+            zIndex: 1,
+          }}
+        >
+          <div className="flex flex-row justify-between items-center w-full shadow">
             <Button
               type="text"
               icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
@@ -203,27 +226,24 @@ const MainLayout: React.FC = () => {
             <Content
               className="flex flex-col"
               style={{
-                // margin: "24px 16px 10px 16px",
-                marginBottom: "0px",
                 padding: 24,
-                minHeight: 280,
-                // background: colorBgContainer,
-                // borderRadius: borderRadiusLG,
+                overflow: "auto",
+                flex: 1,
               }}
             >
               <Outlet />
             </Content>
 
-            <Footer
+            {/* <Footer
               style={{
                 textAlign: "center",
                 backgroundColor: "transparent",
-                paddingTop: "0px",
+                paddingTop: "10px",
                 paddingBottom: "10px",
               }}
             >
               <p>&copy; 2025 Travel Planner. All rights reserved.</p>
-            </Footer>
+            </Footer> */}
           </>
         )}
       </Layout>

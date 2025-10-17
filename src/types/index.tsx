@@ -38,3 +38,17 @@ export interface User {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface ITrip {
+  _id?: string;
+  tripName: string;
+  origin: string;
+  originCityCode: string;
+  destination: string;
+  destinationCityCode: string;
+  startDate: string;
+  endDate: string;
+  budget: number;
+  markers: { lat: number; lng: number; label: string }[];
+  createdAt?: string;
+}
