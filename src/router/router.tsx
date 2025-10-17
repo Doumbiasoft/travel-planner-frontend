@@ -22,11 +22,11 @@ const routes: RouteObject[] = [
         <LandingPage />
       </PublicRoute>
     ),
-    errorElement: <NotFoundPage />,
+    // errorElement: <NotFoundPage />,
   },
   {
     element: <MainLayout />,
-    errorElement: <NotFoundPage />,
+    // errorElement: <NotFoundPage />,
     children: [
       {
         path: "/dashboard",

@@ -16,3 +16,12 @@
 .logout-menu-item {
   color: #ffe566 !important;
 }
+
+/* AutoComplete border radius */
+.autocomplete-field .ant-select-selector {
+  border-radius: 6px !important;
+}
+
+.autocomplete-field .ant-select-selection-search-input {
+  border-radius: 6px !important;
+}

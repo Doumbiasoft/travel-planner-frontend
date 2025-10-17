@@ -52,3 +52,18 @@ export interface ITrip {
   markers: { lat: number; lng: number; label: string }[];
   createdAt?: string;
 }
+
+export interface FilterState {
+  tripName: string;
+  origin: string;
+  destination: string;
+  startDate: string;
+  endDate: string;
+  minBudget: string;
+  maxBudget: string;
+}
+
+export interface CityCode {
+  name: string;
+  iataCode: string;
+}

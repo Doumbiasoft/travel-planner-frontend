@@ -1,170 +1,438 @@
-import React, { useState } from "react";
-import type { ITrip } from "../types";
-import { Calendar, DollarSign, MapPin, Plus } from "lucide-react";
+import React, { useState, useMemo } from "react";
+import { type FilterState, type ITrip } from "../types";
+import {
+  Calendar,
+  DollarSign,
+  MapPin,
+  Plus,
+  Search,
+  X,
+  Filter,
+  Edit,
+} from "lucide-react";
+import { formatDate } from "../utils";
+import TripFormModal from "../components/TripFormModal";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import unitOfWork from "../api/unit-of-work";
+import { Spin } from "antd";
+import { useAlertNotification } from "../hooks/AlertNotification";
 
 const Dashboard: React.FC = () => {
-  const [trips, setTrips] = useState<ITrip[]>([
-    {
-      _id: "1",
-      tripName: "Summer in Paris",
-      origin: "New York",
-      originCityCode: "NYC",
-      destination: "Paris",
-      destinationCityCode: "PAR",
-      startDate: "2025-07-15",
-      endDate: "2025-07-25",
-      budget: 3500,
-      markers: [
-        {
-          lat: 48.8566,
-          lng: 2.3522,
-          label: "Eiffel Tower",
-        },
-        {
-          lat: 48.8606,
-          lng: 2.3376,
-          label: "Louvre Museum",
-        },
-      ],
-      createdAt: "2025-01-15",
-    },
-    {
-      _id: "2",
-      tripName: "Tokyo Adventure",
-      origin: "Los Angeles",
-      originCityCode: "LAX",
-      destination: "Tokyo",
-      destinationCityCode: "TYO",
-      startDate: "2025-09-10",
-      endDate: "2025-09-20",
-      budget: 4200,
-      markers: [
-        {
-          lat: 35.6762,
-          lng: 139.6503,
-          label: "Tokyo Tower",
-        },
-      ],
-      createdAt: "2025-02-01",
-    },
-    {
-      _id: "3",
-      tripName: "Tokyo Adventure",
-      origin: "Los Angeles",
-      originCityCode: "LAX",
-      destination: "Tokyo",
-      destinationCityCode: "TYO",
-      startDate: "2025-09-10",
-      endDate: "2025-09-20",
-      budget: 4200,
-      markers: [
-        {
-          lat: 35.6762,
-          lng: 139.6503,
-          label: "Tokyo Tower",
-        },
-      ],
-      createdAt: "2025-02-01",
-    },
-    {
-      _id: "4",
-      tripName: "Tokyo Adventure",
-      origin: "Los Angeles",
-      originCityCode: "LAX",
-      destination: "Tokyo",
-      destinationCityCode: "TYO",
-      startDate: "2025-09-10",
-      endDate: "2025-09-20",
-      budget: 4200,
-      markers: [
-        {
-          lat: 35.6762,
-          lng: 139.6503,
-          label: "Tokyo Tower",
-        },
-      ],
-      createdAt: "2025-02-01",
-    },
-    {
-      _id: "5",
-      tripName: "Tokyo Adventure",
-      origin: "Los Angeles",
-      originCityCode: "LAX",
-      destination: "Tokyo",
-      destinationCityCode: "TYO",
-      startDate: "2025-09-10",
-      endDate: "2025-09-20",
-      budget: 4200,
-      markers: [
-        {
-          lat: 35.6762,
-          lng: 139.6503,
-          label: "Tokyo Tower",
-        },
-      ],
-      createdAt: "2025-02-01",
-    },
-  ]);
-
+  const queryClient = useQueryClient();
+  const openNotification = useAlertNotification();
   const [selectedTrip, setSelectedTrip] = useState<ITrip | null>(null);
-  const [showAddTrip, setShowAddTrip] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState<"add" | "edit">("add");
+  const [editingTrip, setEditingTrip] = useState<ITrip | null>(null);
+  const [filters, setFilters] = useState<FilterState>({
+    tripName: "",
+    origin: "",
+    destination: "",
+    startDate: "",
+    endDate: "",
+    minBudget: "",
+    maxBudget: "",
+  });
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
+  const {
+    data: trips = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["trips"],
+    queryFn: async () => {
+      const response = await unitOfWork.trip.getTrips();
+      console.log(response);
+      return response.data || [];
+    },
+  });
+
+  const createTripMutation = useMutation({
+    mutationFn: async (newTrip: ITrip) =>
+      await unitOfWork.trip.createTrip(newTrip),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["trips"] });
+      openNotification("Trip created successfully!", "success");
+    },
+    onError: (error: any) => {
+      console.error("Create trip error:", error);
+      openNotification(error?.message || "Failed to create trip", "error");
+    },
+  });
+
+  const updateTripMutation = useMutation({
+    mutationFn: async ({ tripId, data }: { tripId: string; data: ITrip }) =>
+      await unitOfWork.trip.updateTrip(tripId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["trips"] });
+      openNotification("Trip updated successfully!", "success");
+    },
+    onError: (error: any) => {
+      console.error("Update trip error:", error);
+      openNotification(error?.message || "Failed to update trip", "error");
+    },
+  });
+
+  const handleFilterChange = (field: keyof FilterState, value: string) => {
+    setFilters((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const clearFilters = () => {
+    setFilters({
+      tripName: "",
+      origin: "",
+      destination: "",
+      startDate: "",
+      endDate: "",
+      minBudget: "",
+      maxBudget: "",
     });
   };
 
+  const handleOpenAddModal = () => {
+    setModalMode("add");
+    setEditingTrip(null);
+    setModalOpen(true);
+  };
+
+  const handleOpenEditModal = (trip: ITrip) => {
+    setModalMode("edit");
+    setEditingTrip(trip);
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setEditingTrip(null);
+  };
+
+  const handleSubmitTrip = async (trip: ITrip) => {
+    if (modalMode === "add") {
+      createTripMutation.mutate(trip);
+    } else if (trip._id) {
+      updateTripMutation.mutate({ tripId: trip._id, data: trip });
+      if (selectedTrip?._id === trip._id) {
+        setSelectedTrip(trip);
+      }
+    }
+  };
+
+  const activeFilterCount = useMemo(() => {
+    return Object.values(filters).filter((value) => value !== "").length;
+  }, [filters]);
+
+  const filteredTrips = useMemo(() => {
+    return trips.filter((trip: ITrip) => {
+      const matchesTripName = filters.tripName
+        ? trip.tripName.toLowerCase().includes(filters.tripName.toLowerCase())
+        : true;
+
+      const matchesOrigin = filters.origin
+        ? trip.origin.toLowerCase().includes(filters.origin.toLowerCase()) ||
+          trip.originCityCode
+            .toLowerCase()
+            .includes(filters.origin.toLowerCase())
+        : true;
+
+      const matchesDestination = filters.destination
+        ? trip.destination
+            .toLowerCase()
+            .includes(filters.destination.toLowerCase()) ||
+          trip.destinationCityCode
+            .toLowerCase()
+            .includes(filters.destination.toLowerCase())
+        : true;
+
+      const matchesStartDate = filters.startDate
+        ? new Date(trip.startDate) >= new Date(filters.startDate)
+        : true;
+
+      const matchesEndDate = filters.endDate
+        ? new Date(trip.endDate) <= new Date(filters.endDate)
+        : true;
+
+      const matchesMinBudget = filters.minBudget
+        ? trip.budget >= Number(filters.minBudget)
+        : true;
+
+      const matchesMaxBudget = filters.maxBudget
+        ? trip.budget <= Number(filters.maxBudget)
+        : true;
+
+      return (
+        matchesTripName &&
+        matchesOrigin &&
+        matchesDestination &&
+        matchesStartDate &&
+        matchesEndDate &&
+        matchesMinBudget &&
+        matchesMaxBudget
+      );
+    });
+  }, [trips, filters]);
+
   return (
     <div className="flex flex-col">
-      <button
-        onClick={() => setShowAddTrip(!showAddTrip)}
-        className="w-full flex gap-2 items-center justify-center py-3 bg-[#FFE566] text-[#2B2B2B] rounded-lg hover:bg-[#FFFF66] transition-all font-semibold text-lg shadow transform hover:scale-[1.02] cursor-pointer"
-      >
-        <Plus className="w-5 h-5" />
-        Add New Trip
-      </button>
-      <br />
-      {trips.map((trip) => (
-        <div
-          key={trip._id}
-          onClick={() => setSelectedTrip(trip)}
-          className={`p-4 mb-3 rounded-lg border-2 cursor-pointer transition-all ${
-            selectedTrip?._id === trip._id
-              ? "border-y-amber-300 bg-blue-50"
-              : "border-gray-200 bg-white hover:border-y-amber-300"
-          }`}
-        >
-          <h3 className="font-semibold text-gray-800 mb-2">{trip.tripName}</h3>
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold text-gray-800">My Trips</h1>
+        <p className="text-gray-600 mt-1">Plan and manage your adventures</p>
+      </div>
 
-          <div className="space-y-1 text-sm text-gray-600">
-            <div className="flex items-center gap-2">
-              <MapPin className="w-4 h-4" />
-              <span>
-                {trip.origin} → {trip.destination}
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+        <div className="flex gap-3 items-center mb-4">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <input
+              type="text"
+              placeholder="Search by trip name..."
+              value={filters.tripName}
+              onChange={(e) => handleFilterChange("tripName", e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFE566] focus:border-transparent"
+            />
+          </div>
+          <button
+            onClick={handleOpenAddModal}
+            className="flex items-center gap-2 px-4 py-2 bg-[#FFE566] text-[#2B2B2B] rounded-lg hover:bg-[#FFFF66] transition-all font-semibold border border-[#FFE566] cursor-pointer"
+          >
+            <Plus className="w-5 h-5" />
+            <span className="hidden sm:inline">Add Trip</span>
+          </button>
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-all cursor-pointer ${
+              showFilters
+                ? "bg-[#FFE566] border-[#FFE566] text-[#2B2B2B]"
+                : "bg-white border-gray-300 text-gray-700 hover:border-[#FFE566]"
+            }`}
+          >
+            <Filter className="w-5 h-5" />
+            <span className="hidden sm:inline">Filters</span>
+            {activeFilterCount > 0 && (
+              <span className="bg-[#2B2B2B] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                {activeFilterCount}
               </span>
-            </div>
+            )}
+          </button>
+          {activeFilterCount > 0 && (
+            <button
+              onClick={clearFilters}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:border-red-400 hover:text-red-600 transition-all cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+              <span className="hidden sm:inline">Clear</span>
+            </button>
+          )}
+        </div>
 
-            <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4" />
-              <span>
-                {formatDate(trip.startDate)} - {formatDate(trip.endDate)}
-              </span>
+        {showFilters && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-4 border-t border-gray-200">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Origin
+                <input
+                  type="text"
+                  placeholder="City or code..."
+                  value={filters.origin}
+                  onChange={(e) => handleFilterChange("origin", e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFE566] focus:border-transparent"
+                />
+              </label>
             </div>
-
-            <div className="flex items-center gap-2">
-              <DollarSign className="w-4 h-4" />
-              <span>Budget: ${trip.budget.toLocaleString()}</span>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Destination
+                <input
+                  type="text"
+                  placeholder="City or code..."
+                  value={filters.destination}
+                  onChange={(e) =>
+                    handleFilterChange("destination", e.target.value)
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFE566] focus:border-transparent"
+                />
+              </label>
             </div>
-
-            <div className="mt-2 text-xs text-gray-500">
-              {trip.markers.length} marker{trip.markers.length !== 1 ? "s" : ""}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Start Date From
+                <input
+                  autoComplete=""
+                  type="date"
+                  value={filters.startDate}
+                  onChange={(e) =>
+                    handleFilterChange("startDate", e.target.value)
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFE566] focus:border-transparent"
+                />
+              </label>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                End Date Until
+                <input
+                  autoComplete=""
+                  type="date"
+                  value={filters.endDate}
+                  onChange={(e) =>
+                    handleFilterChange("endDate", e.target.value)
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFE566] focus:border-transparent"
+                />
+              </label>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Min Budget ($)
+                <input
+                  type="number"
+                  placeholder="0"
+                  value={filters.minBudget}
+                  onChange={(e) =>
+                    handleFilterChange("minBudget", e.target.value)
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFE566] focus:border-transparent"
+                />
+              </label>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Max Budget ($)
+                <input
+                  type="number"
+                  placeholder="10000"
+                  value={filters.maxBudget}
+                  onChange={(e) =>
+                    handleFilterChange("maxBudget", e.target.value)
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFE566] focus:border-transparent"
+                />
+              </label>
             </div>
           </div>
-        </div>
-      ))}
+        )}
+      </div>
+
+      <div className="mb-4">
+        <p className="text-sm text-gray-600">
+          Showing {filteredTrips.length} of {trips.length} trip
+          {trips.length !== 1 ? "s" : ""}
+        </p>
+      </div>
+
+      <div>
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center py-12">
+            <Spin size="large" />
+            <p className="text-gray-600 mt-4">Loading trips...</p>
+          </div>
+        ) : isError ? (
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <X className="w-16 h-16 text-red-400 mb-4" />
+            <h3 className="text-xl font-semibold text-gray-600 mb-2">
+              Error loading trips
+            </h3>
+            <p className="text-gray-500 mb-4">
+              {error instanceof Error ? error.message : "Something went wrong"}
+            </p>
+          </div>
+        ) : filteredTrips.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <MapPin className="w-16 h-16 text-gray-300 mb-4" />
+            <h3 className="text-xl font-semibold text-gray-600 mb-2">
+              No trips found
+            </h3>
+            <p className="text-gray-500 mb-4">
+              {activeFilterCount > 0
+                ? "Try adjusting your filters to see more results"
+                : "Start planning your first adventure!"}
+            </p>
+            {activeFilterCount > 0 && (
+              <button
+                onClick={clearFilters}
+                className="px-4 py-2 bg-[#FFE566] text-[#2B2B2B] rounded-lg hover:bg-[#FFFF66] transition-all font-semibold cursor-pointer"
+              >
+                Clear Filters
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {filteredTrips.map((trip: ITrip) => (
+              <div
+                key={trip._id}
+                onClick={() => setSelectedTrip(trip)}
+                className={`p-5 rounded-lg border-2 cursor-pointer transition-all hover:shadow-md relative ${
+                  selectedTrip?._id === trip._id
+                    ? "border-[#FFE566] bg-[#FFFEF0] shadow-md"
+                    : "border-gray-200 bg-white hover:border-[#FFE566]"
+                }`}
+              >
+                <div className="flex items-start justify-between mb-3">
+                  <h3 className="font-bold text-gray-800 text-lg flex-1">
+                    {trip.tripName}
+                  </h3>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleOpenEditModal(trip);
+                    }}
+                    className="flex items-center gap-1 px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-[#FFE566] hover:text-[#2B2B2B] transition-all"
+                  >
+                    <Edit className="w-4 h-4" />
+                    <span>Edit</span>
+                  </button>
+                </div>
+
+                <div className="space-y-2 text-sm text-gray-600">
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-blue-500" />
+                    <span>
+                      <span className="font-medium">{trip.origin}</span> (
+                      {trip.originCityCode}) →
+                      <span className="font-medium"> {trip.destination}</span> (
+                      {trip.destinationCityCode})
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-green-500" />
+                    <span>
+                      {formatDate(trip.startDate)} - {formatDate(trip.endDate)}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <DollarSign className="w-4 h-4 text-yellow-600" />
+                    <span className="font-semibold">
+                      ${trip.budget.toLocaleString()}
+                    </span>
+                  </div>
+
+                  <div className="mt-3 pt-3 border-t border-gray-200 flex items-center justify-between">
+                    <span className="text-xs text-gray-500">
+                      {trip.markers.length} marker
+                      {trip.markers.length !== 1 ? "s" : ""}
+                    </span>
+                    <span className="text-xs text-gray-400">
+                      Created {formatDate(trip.createdAt!)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <TripFormModal
+        open={modalOpen}
+        onClose={handleCloseModal}
+        onSubmit={handleSubmitTrip}
+        trip={editingTrip}
+        mode={modalMode}
+      />
     </div>
   );
 };
