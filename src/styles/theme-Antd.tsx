@@ -15,9 +15,12 @@ const themeAntd: ThemeConfig = {
     colorBgBase: "#fff",
 
     // Alias Colors
-    colorLink: "#1677ff",
-    colorLinkHover: "#69b1ff",
-    colorLinkActive: "#0958d9",
+    // colorLink: "#1677ff",
+    // colorLinkHover: "#69b1ff",
+    // colorLinkActive: "#0958d9",
+    colorLink: "#FFFF66",
+    colorLinkHover: "#faad14",
+    colorLinkActive: "#faad14",
     colorFill: "rgba(0, 0, 0, 0.15)",
 
     // Custom colors

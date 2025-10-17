@@ -66,7 +66,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       await unitOfWork.auth.logout();
     } catch (err) {
-      console.error("Logout error:", err);
+      if (ENV.VITE_MODE === "development") {
+        console.error("Logout error:", err);
+      }
     } finally {
       // Remove token from cookie
       removeCookie(TOKEN_COOKIE_NAME);
@@ -166,7 +168,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           logout();
         }
       } catch (err: any) {
-        console.error("Failed to fetch user:", err);
+        if (ENV.VITE_MODE === "development") {
+          console.error("Failed to fetch user:", err);
+        }
         setError("Failed to fetch user data");
         setUser(null);
       } finally {

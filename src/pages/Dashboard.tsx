@@ -17,6 +17,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import unitOfWork from "../api/unit-of-work";
 import { Spin, App } from "antd";
 import { useAlertNotification } from "../hooks/AlertNotification";
+import trip_empty_state from "../assets/images/trip-empty-state-1.png";
 
 const Dashboard: React.FC = () => {
   const { modal } = App.useApp();
@@ -213,10 +214,10 @@ const Dashboard: React.FC = () => {
   return (
     <div className="flex flex-col">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">My Trips</h1>
+        <h1 className="text-2xl font-bold text-gray-800">My Trips</h1>
         <p className="text-gray-600 mt-1">Plan and manage your adventures</p>
       </div>
-
+      {/** Trip filter component */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
         <div className="flex gap-3 items-center mb-4">
           <div className="flex-1 relative">
@@ -350,7 +351,7 @@ const Dashboard: React.FC = () => {
           </div>
         )}
       </div>
-
+      {/** Trip number label */}
       <div className="mb-4">
         <p className="text-sm text-gray-600">
           Showing {filteredTrips.length} of {trips.length} trip
@@ -376,14 +377,18 @@ const Dashboard: React.FC = () => {
           </div>
         ) : filteredTrips.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-center">
-            <MapPin className="w-16 h-16 text-gray-300 mb-4" />
+            {/* <MapPin className="w-16 h-16 text-gray-300 mb-4" /> */}
+            <img src={trip_empty_state} alt="" className="w-80 h-80" />
+            <a href="https://storyset.com/money" className="hidden">
+              Trip Illustration
+            </a>
             <h3 className="text-xl font-semibold text-gray-600 mb-2">
               No trips found
             </h3>
             <p className="text-gray-500 mb-4">
               {activeFilterCount > 0
                 ? "Try adjusting your filters to see more results"
-                : "Start planning your first adventure!"}
+                : "Start planning your first adventure!✨"}
             </p>
             {activeFilterCount > 0 && (
               <button

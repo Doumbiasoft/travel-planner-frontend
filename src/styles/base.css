@@ -28,7 +28,7 @@
 
 /* Modal confirm centering */
 .ant-modal-confirm {
-  top: 50% !important;
+  top: 40% !important;
   transform: translateY(-50%) !important;
   padding-bottom: 0 !important;
 }

@@ -65,6 +65,7 @@ const SignInPage: React.FC = () => {
         <Link
           to="/"
           className="flex items-center gap-2 text-white hover:text-[#f7d749] transition-colors"
+          style={{ color: "white" }}
         >
           <span className="text-2xl">←</span>
           <span className="font-medium">Back to Home</span>
