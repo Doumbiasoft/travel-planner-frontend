@@ -44,7 +44,6 @@ const Dashboard: React.FC = () => {
     queryKey: ["trips"],
     queryFn: async () => {
       const response = await unitOfWork.trip.getTrips();
-      console.log(response);
       return response.data || [];
     },
   });
@@ -79,18 +78,6 @@ const Dashboard: React.FC = () => {
     setFilters((prev) => ({ ...prev, [field]: value }));
   };
 
-  const clearFilters = () => {
-    setFilters({
-      tripName: "",
-      origin: "",
-      destination: "",
-      startDate: "",
-      endDate: "",
-      minBudget: "",
-      maxBudget: "",
-    });
-  };
-
   const handleOpenAddModal = () => {
     setModalMode("add");
     setEditingTrip(null);
@@ -98,6 +85,8 @@ const Dashboard: React.FC = () => {
   };
 
   const handleOpenEditModal = (trip: ITrip) => {
+    console.log(trip);
+
     setModalMode("edit");
     setEditingTrip(trip);
     setModalOpen(true);
@@ -112,11 +101,24 @@ const Dashboard: React.FC = () => {
     if (modalMode === "add") {
       createTripMutation.mutate(trip);
     } else if (trip._id) {
-      updateTripMutation.mutate({ tripId: trip._id, data: trip });
+      let f_data = { ...trip };
+      delete f_data._id;
+      updateTripMutation.mutate({ tripId: trip._id, data: f_data });
       if (selectedTrip?._id === trip._id) {
         setSelectedTrip(trip);
       }
     }
+  };
+  const clearFilters = () => {
+    setFilters({
+      tripName: "",
+      origin: "",
+      destination: "",
+      startDate: "",
+      endDate: "",
+      minBudget: "",
+      maxBudget: "",
+    });
   };
 
   const activeFilterCount = useMemo(() => {
@@ -376,9 +378,10 @@ const Dashboard: React.FC = () => {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
+                      setSelectedTrip(trip);
                       handleOpenEditModal(trip);
                     }}
-                    className="flex items-center gap-1 px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-[#FFE566] hover:text-[#2B2B2B] transition-all"
+                    className="flex items-center gap-1 px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-[#FFE566] hover:text-[#2B2B2B] transition-all cursor-pointer"
                   >
                     <Edit className="w-4 h-4" />
                     <span>Edit</span>
