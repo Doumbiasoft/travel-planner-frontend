@@ -9,15 +9,17 @@ import {
   X,
   Filter,
   Edit,
+  Trash2,
 } from "lucide-react";
 import { formatDate } from "../utils";
 import TripFormModal from "../components/TripFormModal";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import unitOfWork from "../api/unit-of-work";
-import { Spin } from "antd";
+import { Spin, App } from "antd";
 import { useAlertNotification } from "../hooks/AlertNotification";
 
 const Dashboard: React.FC = () => {
+  const { modal } = App.useApp();
   const queryClient = useQueryClient();
   const openNotification = useAlertNotification();
   const [selectedTrip, setSelectedTrip] = useState<ITrip | null>(null);
@@ -74,6 +76,20 @@ const Dashboard: React.FC = () => {
     },
   });
 
+  const deleteTripMutation = useMutation({
+    mutationFn: async (tripId: string) =>
+      await unitOfWork.trip.deleteTrip(tripId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["trips"] });
+      openNotification("Trip deleted successfully!", "success");
+      setSelectedTrip(null);
+    },
+    onError: (error: any) => {
+      console.error("Delete trip error:", error);
+      openNotification(error?.message || "Failed to delete trip", "error");
+    },
+  });
+
   const handleFilterChange = (field: keyof FilterState, value: string) => {
     setFilters((prev) => ({ ...prev, [field]: value }));
   };
@@ -85,8 +101,6 @@ const Dashboard: React.FC = () => {
   };
 
   const handleOpenEditModal = (trip: ITrip) => {
-    console.log(trip);
-
     setModalMode("edit");
     setEditingTrip(trip);
     setModalOpen(true);
@@ -108,6 +122,27 @@ const Dashboard: React.FC = () => {
         setSelectedTrip(trip);
       }
     }
+  };
+
+  const handleDeleteTrip = (trip: ITrip) => {
+    modal.confirm({
+      title: (
+        <div style={{ fontSize: "18px", fontWeight: 600 }}>Delete Trip</div>
+      ),
+      content: (
+        <span
+          style={{ fontSize: "15px" }}
+        >{`Are you sure you want to delete "${trip.tripName}"? This action cannot be undone.`}</span>
+      ),
+      okText: "Delete",
+      okType: "danger",
+      cancelText: "Cancel",
+      onOk: () => {
+        if (trip._id) {
+          deleteTripMutation.mutate(trip._id);
+        }
+      },
+    });
   };
   const clearFilters = () => {
     setFilters({
@@ -375,17 +410,30 @@ const Dashboard: React.FC = () => {
                   <h3 className="font-bold text-gray-800 text-lg flex-1">
                     {trip.tripName}
                   </h3>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSelectedTrip(trip);
-                      handleOpenEditModal(trip);
-                    }}
-                    className="flex items-center gap-1 px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-[#FFE566] hover:text-[#2B2B2B] transition-all cursor-pointer"
-                  >
-                    <Edit className="w-4 h-4" />
-                    <span>Edit</span>
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedTrip(trip);
+                        handleOpenEditModal(trip);
+                      }}
+                      className="flex items-center gap-1 px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-[#FFE566] hover:text-[#2B2B2B] transition-all cursor-pointer"
+                    >
+                      <Edit className="w-4 h-4" />
+                      <span>Edit</span>
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedTrip(trip);
+                        handleDeleteTrip(trip);
+                      }}
+                      className="flex items-center gap-1 px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-red-100 hover:text-red-600 transition-all cursor-pointer"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      <span>Delete</span>
+                    </button>
+                  </div>
                 </div>
 
                 <div className="space-y-2 text-sm text-gray-600">

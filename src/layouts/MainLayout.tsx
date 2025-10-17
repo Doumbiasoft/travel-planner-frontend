@@ -118,7 +118,7 @@ const MainLayout: React.FC = () => {
   const renderLogo = () => (
     <div className=" flex items-center justify-center pt-5 pb-2 border-b border-amber-200 mb-3">
       <img src={logo} alt="Travel Planner logo" className="h-9" />
-      <span className="font-bold text-xl">
+      <span className="font-bold text-xl text-white">
         {collapsed ? "" : "Travel Planner"}
       </span>
     </div>

@@ -206,12 +206,27 @@ const TripFormModal: React.FC<TripFormModalProps> = ({
       cancelText="Cancel"
       width={600}
       destroyOnHidden
+      okButtonProps={{
+        style: {
+          backgroundColor: "#FFE566",
+          borderColor: "#FFE566",
+          color: "#000000",
+          fontWeight: 600,
+        },
+      }}
+      cancelButtonProps={{
+        style: {
+          color: "#000000",
+        },
+      }}
       styles={{
         body: {
           paddingTop: 24,
         },
       }}
     >
+      <div className="w-full border-t border-gray-200 mb-5"></div>
+
       <Form form={form} layout="vertical" name="tripForm" autoComplete="off">
         <Form.Item
           label="Trip Name"
@@ -228,47 +243,49 @@ const TripFormModal: React.FC<TripFormModalProps> = ({
           />
         </Form.Item>
 
-        <Form.Item
-          label="Origin City"
-          name="origin"
-          rules={[{ required: true, message: "Please select origin city" }]}
-          className="autocomplete-field"
-        >
-          <AutoComplete
-            options={originOptions}
-            onSearch={handleOriginSearch}
-            onSelect={handleOriginSelect}
-            placeholder="Type to search (e.g., New York)"
-            size="large"
-            filterOption={false}
-            notFoundContent={
-              originQuery.length > 2 ? "No cities found" : "Type to search..."
-            }
-          />
-        </Form.Item>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Form.Item
+            label="Origin City"
+            name="origin"
+            rules={[{ required: true, message: "Please select origin city" }]}
+            className="autocomplete-field"
+          >
+            <AutoComplete
+              options={originOptions}
+              onSearch={handleOriginSearch}
+              onSelect={handleOriginSelect}
+              placeholder="Type to search (e.g., New York)"
+              size="large"
+              filterOption={false}
+              notFoundContent={
+                originQuery.length > 2 ? "No cities found" : "Type to search..."
+              }
+            />
+          </Form.Item>
 
-        <Form.Item
-          label="Destination City"
-          name="destination"
-          rules={[
-            { required: true, message: "Please select destination city" },
-          ]}
-          className="autocomplete-field"
-        >
-          <AutoComplete
-            options={destinationOptions}
-            onSearch={handleDestinationSearch}
-            onSelect={handleDestinationSelect}
-            placeholder="Type to search (e.g., Paris)"
-            size="large"
-            filterOption={false}
-            notFoundContent={
-              destinationQuery.length > 2
-                ? "No cities found"
-                : "Type to search..."
-            }
-          />
-        </Form.Item>
+          <Form.Item
+            label="Destination City"
+            name="destination"
+            rules={[
+              { required: true, message: "Please select destination city" },
+            ]}
+            className="autocomplete-field"
+          >
+            <AutoComplete
+              options={destinationOptions}
+              onSearch={handleDestinationSearch}
+              onSelect={handleDestinationSelect}
+              placeholder="Type to search (e.g., Paris)"
+              size="large"
+              filterOption={false}
+              notFoundContent={
+                destinationQuery.length > 2
+                  ? "No cities found"
+                  : "Type to search..."
+              }
+            />
+          </Form.Item>
+        </div>
 
         <Form.Item
           label="Travel Dates"
@@ -310,6 +327,7 @@ const TripFormModal: React.FC<TripFormModalProps> = ({
           />
         </Form.Item>
       </Form>
+      <div className="w-full border-b border-gray-200"></div>
     </Modal>
   );
 };
