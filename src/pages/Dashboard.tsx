@@ -18,10 +18,12 @@ import unitOfWork from "../api/unit-of-work";
 import { Spin, App } from "antd";
 import { useAlertNotification } from "../hooks/AlertNotification";
 import trip_empty_state from "../assets/images/trip-empty-state-1.png";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard: React.FC = () => {
   const { modal } = App.useApp();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const openNotification = useAlertNotification();
   const [selectedTrip, setSelectedTrip] = useState<ITrip | null>(null);
   const [showFilters, setShowFilters] = useState(false);
@@ -221,7 +223,7 @@ const Dashboard: React.FC = () => {
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
         <div className="flex gap-3 items-center mb-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-yellow-400 w-5 h-5" />
             <input
               type="text"
               placeholder="Search by trip name..."
@@ -377,7 +379,6 @@ const Dashboard: React.FC = () => {
           </div>
         ) : filteredTrips.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-center">
-            {/* <MapPin className="w-16 h-16 text-gray-300 mb-4" /> */}
             <img src={trip_empty_state} alt="" className="w-80 h-80" />
             <a href="https://storyset.com/money" className="hidden">
               Trip Illustration
@@ -404,7 +405,10 @@ const Dashboard: React.FC = () => {
             {filteredTrips.map((trip: ITrip) => (
               <div
                 key={trip._id}
-                onClick={() => setSelectedTrip(trip)}
+                onClick={() => {
+                  setSelectedTrip(trip);
+                  navigate(`/dashboard/trips/${trip._id}`);
+                }}
                 className={`p-5 rounded-lg border-2 cursor-pointer transition-all hover:shadow-md relative ${
                   selectedTrip?._id === trip._id
                     ? "border-[#FFE566] bg-[#FFFEF0] shadow-md"
@@ -433,7 +437,7 @@ const Dashboard: React.FC = () => {
                         setSelectedTrip(trip);
                         handleDeleteTrip(trip);
                       }}
-                      className="flex items-center gap-1 px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-red-100 hover:text-red-600 transition-all cursor-pointer"
+                      className="flex items-center gap-1 px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-red-500 hover:text-white transition-all cursor-pointer"
                     >
                       <Trash2 className="w-4 h-4" />
                       <span>Delete</span>

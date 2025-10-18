@@ -13,6 +13,7 @@ import ActivateAccountPage from "../pages/auth/ActivateAccountPage";
 import RegisteredAccountActivationInfo from "../pages/auth/RegisteredAccountActivationInfo";
 import ForgotPassword from "../pages/auth/ForgotPassword";
 import ChangeAccountPassword from "../pages/auth/ChangeAccountPassword";
+import TripDetailPage from "../pages/TripDetailPage";
 
 const routes: RouteObject[] = [
   {
@@ -33,6 +34,14 @@ const routes: RouteObject[] = [
         element: (
           <ProtectedRoute>
             <Dashboard />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/dashboard/trips/:id",
+        element: (
+          <ProtectedRoute>
+            <TripDetailPage />
           </ProtectedRoute>
         ),
       },

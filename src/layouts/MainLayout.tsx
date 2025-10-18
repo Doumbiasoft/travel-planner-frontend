@@ -69,6 +69,9 @@ const MainLayout: React.FC = () => {
   const { user, logout } = useAuth();
 
   const getSelectedKeys = (pathname: string): string[] => {
+    if (pathname.startsWith(`/dashboard`)) {
+      return [`/dashboard`];
+    }
     return [pathname];
   };
 
@@ -124,9 +127,9 @@ const MainLayout: React.FC = () => {
     </div>
   );
   const renderUserProfile = () => (
-    // {"hidden md:block"}
+    // {"hidden sm:inline"}
     <div className="flex items-center justify-center gap-2">
-      <span className="text-sm md:text-base ">
+      <span className="text-sm sm:text-base ">
         {user?.firstName} {user?.lastName}
       </span>
       {user?.isOauth && user.oauthPicture ? (
