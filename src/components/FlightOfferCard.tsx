@@ -1,7 +1,7 @@
 import React from "react";
 import { Plane, Clock, Users, Briefcase } from "lucide-react";
 import type { FlightOffer } from "../types";
-import { format } from "date-fns";
+import { formatDateF, formatDuration, formatTime } from "../utils";
 
 interface FlightOfferCardProps {
   flight: FlightOffer;
@@ -12,22 +12,6 @@ const FlightOfferCard: React.FC<FlightOfferCardProps> = ({
   flight,
   isRecommended = false,
 }) => {
-  const formatDuration = (duration: string) => {
-    const match = duration.match(/PT(\d+H)?(\d+M)?/);
-    if (!match) return duration;
-    const hours = match[1] ? parseInt(match[1]) : 0;
-    const minutes = match[2] ? parseInt(match[2]) : 0;
-    return `${hours}h ${minutes}m`;
-  };
-
-  const formatTime = (datetime: string) => {
-    return format(new Date(datetime), "HH:mm");
-  };
-
-  const formatDate = (datetime: string) => {
-    return format(new Date(datetime), "MMM dd");
-  };
-
   // Get outbound and return itineraries
   const outbound = flight.itineraries[0];
   const returnFlight = flight.itineraries[1];
@@ -94,7 +78,7 @@ const FlightOfferCard: React.FC<FlightOfferCardProps> = ({
                           ` T${segment.departure.terminal}`}
                       </div>
                       <div className="text-xs text-gray-500">
-                        {formatDate(segment.departure.at)}
+                        {formatDateF(segment.departure.at)}
                       </div>
                     </div>
 
@@ -122,7 +106,7 @@ const FlightOfferCard: React.FC<FlightOfferCardProps> = ({
                           ` T${segment.arrival.terminal}`}
                       </div>
                       <div className="text-xs text-gray-500">
-                        {formatDate(segment.arrival.at)}
+                        {formatDateF(segment.arrival.at)}
                       </div>
                     </div>
                   </div>
@@ -165,7 +149,7 @@ const FlightOfferCard: React.FC<FlightOfferCardProps> = ({
                             ` T${segment.departure.terminal}`}
                         </div>
                         <div className="text-xs text-gray-500">
-                          {formatDate(segment.departure.at)}
+                          {formatDateF(segment.departure.at)}
                         </div>
                       </div>
 
@@ -193,7 +177,7 @@ const FlightOfferCard: React.FC<FlightOfferCardProps> = ({
                             ` T${segment.arrival.terminal}`}
                         </div>
                         <div className="text-xs text-gray-500">
-                          {formatDate(segment.arrival.at)}
+                          {formatDateF(segment.arrival.at)}
                         </div>
                       </div>
                     </div>
