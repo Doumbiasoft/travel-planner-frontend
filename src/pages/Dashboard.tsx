@@ -1,24 +1,15 @@
 import React, { useState, useMemo } from "react";
 import { type FilterState, type ITrip } from "../types";
-import {
-  Calendar,
-  DollarSign,
-  MapPin,
-  Plus,
-  Search,
-  X,
-  Filter,
-  Edit,
-  Trash2,
-} from "lucide-react";
-import { formatDate } from "../utils";
+import { Plus, Search, X, Filter } from "lucide-react";
 import TripFormModal from "../components/TripFormModal";
+import TripCard from "../components/TripCard";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import unitOfWork from "../api/unit-of-work";
 import { Spin, App } from "antd";
 import { useAlertNotification } from "../hooks/AlertNotification";
 import trip_empty_state from "../assets/images/trip-empty-state-1.png";
 import { useNavigate } from "react-router-dom";
+import { ENV } from "../config/env";
 
 const Dashboard: React.FC = () => {
   const { modal } = App.useApp();
@@ -61,7 +52,9 @@ const Dashboard: React.FC = () => {
       openNotification("Trip created successfully!", "success");
     },
     onError: (error: any) => {
-      console.error("Create trip error:", error);
+      if (ENV.VITE_MODE === "development") {
+        console.error("Create trip error:", error);
+      }
       openNotification(error?.message || "Failed to create trip", "error");
     },
   });
@@ -74,7 +67,9 @@ const Dashboard: React.FC = () => {
       openNotification("Trip updated successfully!", "success");
     },
     onError: (error: any) => {
-      console.error("Update trip error:", error);
+      if (ENV.VITE_MODE === "development") {
+        console.error("Update trip error:", error);
+      }
       openNotification(error?.message || "Failed to update trip", "error");
     },
   });
@@ -88,7 +83,9 @@ const Dashboard: React.FC = () => {
       setSelectedTrip(null);
     },
     onError: (error: any) => {
-      console.error("Delete trip error:", error);
+      if (ENV.VITE_MODE === "development") {
+        console.error("Delete trip error:", error);
+      }
       openNotification(error?.message || "Failed to delete trip", "error");
     },
   });
@@ -403,84 +400,23 @@ const Dashboard: React.FC = () => {
         ) : (
           <div className="space-y-3">
             {filteredTrips.map((trip: ITrip) => (
-              <div
+              <TripCard
                 key={trip._id}
+                trip={trip}
+                isSelected={selectedTrip?._id === trip._id}
                 onClick={() => {
                   setSelectedTrip(trip);
                   navigate(`/dashboard/trips/${trip._id}`);
                 }}
-                className={`p-5 rounded-lg border-2 cursor-pointer transition-all hover:shadow-md relative ${
-                  selectedTrip?._id === trip._id
-                    ? "border-[#FFE566] bg-[#FFFEF0] shadow-md"
-                    : "border-gray-200 bg-white hover:border-[#FFE566]"
-                }`}
-              >
-                <div className="flex items-start justify-between mb-3">
-                  <h3 className="font-bold text-gray-800 text-lg flex-1">
-                    {trip.tripName}
-                  </h3>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedTrip(trip);
-                        handleOpenEditModal(trip);
-                      }}
-                      className="flex items-center gap-1 px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-[#FFE566] hover:text-[#2B2B2B] transition-all cursor-pointer"
-                    >
-                      <Edit className="w-4 h-4" />
-                      <span>Edit</span>
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedTrip(trip);
-                        handleDeleteTrip(trip);
-                      }}
-                      className="flex items-center gap-1 px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-red-500 hover:text-white transition-all cursor-pointer"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      <span>Delete</span>
-                    </button>
-                  </div>
-                </div>
-
-                <div className="space-y-2 text-sm text-gray-600">
-                  <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-blue-500" />
-                    <span>
-                      <span className="font-medium">{trip.origin}</span> (
-                      {trip.originCityCode}) →
-                      <span className="font-medium"> {trip.destination}</span> (
-                      {trip.destinationCityCode})
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-green-500" />
-                    <span>
-                      {formatDate(trip.startDate)} - {formatDate(trip.endDate)}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <DollarSign className="w-4 h-4 text-yellow-600" />
-                    <span className="font-semibold">
-                      ${trip.budget.toLocaleString()}
-                    </span>
-                  </div>
-
-                  <div className="mt-3 pt-3 border-t border-gray-200 flex items-center justify-between">
-                    <span className="text-xs text-gray-500">
-                      {trip.markers.length} marker
-                      {trip.markers.length !== 1 ? "s" : ""}
-                    </span>
-                    <span className="text-xs text-gray-400">
-                      Created {formatDate(trip.createdAt!)}
-                    </span>
-                  </div>
-                </div>
-              </div>
+                onEdit={(trip) => {
+                  setSelectedTrip(trip);
+                  handleOpenEditModal(trip);
+                }}
+                onDelete={(trip) => {
+                  setSelectedTrip(trip);
+                  handleDeleteTrip(trip);
+                }}
+              />
             ))}
           </div>
         )}

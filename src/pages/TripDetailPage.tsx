@@ -1,17 +1,27 @@
-import React from "react";
-import { Link, useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { Spin, Tabs, Alert } from "antd";
-import { Calendar, DollarSign, MapPin, AlertCircle } from "lucide-react";
+import React, { useState } from "react";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Spin, Tabs, Alert, App } from "antd";
+import { AlertCircle } from "lucide-react";
 import unitOfWork from "../api/unit-of-work";
-import { formatDate } from "../utils";
 import type { ITrip, TripOffersData } from "../types";
 import FlightOfferCard from "../components/FlightOfferCard";
 import HotelOfferCard from "../components/HotelOfferCard";
+import TripCard from "../components/TripCard";
+import TripFormModal from "../components/TripFormModal";
+import { useAlertNotification } from "../hooks/AlertNotification";
+import { formatDate } from "../utils";
+import { ENV } from "../config/env";
 
 const TripDetailPage: React.FC = () => {
+  const { modal } = App.useApp();
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const openNotification = useAlertNotification();
   const urlParams = useParams();
   const tripId = urlParams.id;
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editingTrip, setEditingTrip] = useState<ITrip | null>(null);
 
   // Fetch trip details
   const {
@@ -26,9 +36,79 @@ const TripDetailPage: React.FC = () => {
       const result: ITrip = response.data;
       return result;
     },
-    refetchInterval: false,
     enabled: !!tripId,
   });
+
+  const updateTripMutation = useMutation({
+    mutationFn: async ({ tripId, data }: { tripId: string; data: ITrip }) =>
+      await unitOfWork.trip.updateTrip(tripId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["trip", tripId] });
+      queryClient.invalidateQueries({ queryKey: ["trips"] });
+      openNotification("Trip updated successfully!", "success");
+    },
+    onError: (error: any) => {
+      if (ENV.VITE_MODE === "development") {
+        console.error("Update trip error:", error);
+      }
+      openNotification(error?.message || "Failed to update trip", "error");
+    },
+  });
+
+  const deleteTripMutation = useMutation({
+    mutationFn: async (tripId: string) =>
+      await unitOfWork.trip.deleteTrip(tripId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["trips"] });
+      openNotification("Trip deleted successfully!", "success");
+      navigate("/dashboard");
+    },
+    onError: (error: any) => {
+      if (ENV.VITE_MODE === "development") {
+        console.error("Delete trip error:", error);
+      }
+      openNotification(error?.message || "Failed to delete trip", "error");
+    },
+  });
+
+  const handleOpenEditModal = (trip: ITrip) => {
+    setEditingTrip(trip);
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setEditingTrip(null);
+  };
+
+  const handleSubmitTrip = async (trip: ITrip) => {
+    if (trip._id) {
+      let f_data = { ...trip };
+      delete f_data._id;
+      updateTripMutation.mutate({ tripId: trip._id, data: f_data });
+    }
+  };
+
+  const handleDeleteTrip = (trip: ITrip) => {
+    modal.confirm({
+      title: (
+        <div style={{ fontSize: "18px", fontWeight: 600 }}>Delete Trip</div>
+      ),
+      content: (
+        <span
+          style={{ fontSize: "15px" }}
+        >{`Are you sure you want to delete "${trip.tripName}"? This action cannot be undone.`}</span>
+      ),
+      okText: "Delete",
+      okType: "danger",
+      cancelText: "Cancel",
+      onOk: () => {
+        if (trip._id) {
+          deleteTripMutation.mutate(trip._id);
+        }
+      },
+    });
+  };
 
   const {
     data: offersData,
@@ -49,7 +129,6 @@ const TripDetailPage: React.FC = () => {
       const response = await unitOfWork.amadeus.getTripOffers(f_data);
       return response.data as TripOffersData;
     },
-    refetchInterval: false,
     enabled: !!tripData,
   });
 
@@ -87,35 +166,12 @@ const TripDetailPage: React.FC = () => {
       ) : tripData ? (
         <div className="space-y-6">
           {/* Trip Information Card */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">
-              {tripData.tripName}
-            </h2>
-            <div className="space-y-3">
-              <div className="flex items-center gap-3">
-                <MapPin className="w-5 h-5 text-blue-500" />
-                <span className="text-gray-700">
-                  <span className="font-medium">{tripData.origin}</span> (
-                  {tripData.originCityCode}) →{" "}
-                  <span className="font-medium">{tripData.destination}</span> (
-                  {tripData.destinationCityCode})
-                </span>
-              </div>
-              <div className="flex items-center gap-3">
-                <Calendar className="w-5 h-5 text-green-500" />
-                <span className="text-gray-700">
-                  {formatDate(tripData.startDate)} -{" "}
-                  {formatDate(tripData.endDate)}
-                </span>
-              </div>
-              <div className="flex items-center gap-3">
-                <DollarSign className="w-5 h-5 text-yellow-600" />
-                <span className="text-gray-700 font-semibold">
-                  ${tripData.budget.toLocaleString()}
-                </span>
-              </div>
-            </div>
-          </div>
+          <TripCard
+            trip={tripData}
+            showActions={true}
+            onEdit={handleOpenEditModal}
+            onDelete={handleDeleteTrip}
+          />
 
           {/* Trip Offers Section */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -272,6 +328,14 @@ const TripDetailPage: React.FC = () => {
           </div>
         </div>
       ) : null}
+
+      <TripFormModal
+        open={modalOpen}
+        onClose={handleCloseModal}
+        onSubmit={handleSubmitTrip}
+        trip={editingTrip}
+        mode="edit"
+      />
     </div>
   );
 };

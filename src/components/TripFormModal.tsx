@@ -11,6 +11,7 @@ import type { ITrip } from "../types";
 import dayjs from "dayjs";
 import { useQuery } from "@tanstack/react-query";
 import unitOfWork from "../api/unit-of-work";
+import { ENV } from "../config/env";
 
 const { RangePicker } = DatePicker;
 
@@ -161,7 +162,9 @@ const TripFormModal: React.FC<TripFormModalProps> = ({
       const values = await form.validateFields();
 
       if (!selectedOrigin || !selectedDestination) {
-        console.error("Please select origin and destination cities");
+        if (ENV.VITE_MODE === "development") {
+          console.error("Please select origin and destination cities");
+        }
         return;
       }
 
@@ -183,7 +186,9 @@ const TripFormModal: React.FC<TripFormModalProps> = ({
       setSelectedDestination(null);
       onClose();
     } catch (error) {
-      console.error("Validation failed:", error);
+      if (ENV.VITE_MODE === "development") {
+        console.error("Validation failed:", error);
+      }
     }
   };
 
@@ -297,9 +302,11 @@ const TripFormModal: React.FC<TripFormModalProps> = ({
             className="w-full"
             format="YYYY-MM-DD"
             style={{ borderRadius: "6px" }}
+            placeholder={["Start Date", "End Date"]}
             disabledDate={(current) => {
               return current && current < dayjs().startOf("day");
             }}
+            allowClear
           />
         </Form.Item>
 
