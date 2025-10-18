@@ -71,6 +71,50 @@ const TripDetailPage: React.FC = () => {
     },
   });
 
+  const toggleNotificationMutation = useMutation({
+    mutationFn: async ({
+      tripId,
+      enabled,
+    }: {
+      tripId: string;
+      enabled: boolean;
+    }) => {
+      if (!tripData) throw new Error("Trip not found");
+
+      const updatedTrip = {
+        tripId: tripData._id,
+        tripName: tripData.tripName,
+        origin: tripData.origin,
+        originCityCode: tripData.originCityCode,
+        destination: tripData.destination,
+        destinationCityCode: tripData.destinationCityCode,
+        startDate: tripData.startDate,
+        endDate: tripData.endDate,
+        budget: tripData.budget,
+        markers: tripData.markers,
+        notifications: {
+          priceDrop: enabled,
+          email: enabled,
+        },
+      };
+      return await unitOfWork.trip.updateTrip(tripId, updatedTrip);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["trip", tripId] });
+      queryClient.invalidateQueries({ queryKey: ["trips"] });
+      openNotification("Notification settings updated!", "success");
+    },
+    onError: (error: any) => {
+      if (ENV.VITE_MODE === "development") {
+        console.error("Toggle notification error:", error);
+      }
+      openNotification(
+        error?.message || "Failed to update notification settings",
+        "error"
+      );
+    },
+  });
+
   const handleOpenEditModal = (trip: ITrip) => {
     setEditingTrip(trip);
     setModalOpen(true);
@@ -108,6 +152,10 @@ const TripDetailPage: React.FC = () => {
         }
       },
     });
+  };
+
+  const handleNotificationToggle = (tripId: string, enabled: boolean) => {
+    toggleNotificationMutation.mutate({ tripId, enabled });
   };
 
   const {
@@ -171,6 +219,7 @@ const TripDetailPage: React.FC = () => {
             showActions={true}
             onEdit={handleOpenEditModal}
             onDelete={handleDeleteTrip}
+            onNotificationToggle={handleNotificationToggle}
           />
 
           {/* Trip Offers Section */}

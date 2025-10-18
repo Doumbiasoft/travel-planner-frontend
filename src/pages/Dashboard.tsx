@@ -90,6 +90,50 @@ const Dashboard: React.FC = () => {
     },
   });
 
+  const toggleNotificationMutation = useMutation({
+    mutationFn: async ({
+      tripId,
+      enabled,
+    }: {
+      tripId: string;
+      enabled: boolean;
+    }) => {
+      const trip = trips.find((t: ITrip) => t._id === tripId);
+      if (!trip) throw new Error("Trip not found");
+
+      const updatedTrip = {
+        tripId: trip._id,
+        tripName: trip.tripName,
+        origin: trip.origin,
+        originCityCode: trip.originCityCode,
+        destination: trip.destination,
+        destinationCityCode: trip.destinationCityCode,
+        startDate: trip.startDate,
+        endDate: trip.endDate,
+        budget: trip.budget,
+        markers: trip.markers,
+        notifications: {
+          priceDrop: enabled,
+          email: enabled,
+        },
+      };
+      return await unitOfWork.trip.updateTrip(tripId, updatedTrip);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["trips"] });
+      openNotification("Notification settings updated!", "success");
+    },
+    onError: (error: any) => {
+      if (ENV.VITE_MODE === "development") {
+        console.error("Toggle notification error:", error);
+      }
+      openNotification(
+        error?.message || "Failed to update notification settings",
+        "error"
+      );
+    },
+  });
+
   const handleFilterChange = (field: keyof FilterState, value: string) => {
     setFilters((prev) => ({ ...prev, [field]: value }));
   };
@@ -143,6 +187,10 @@ const Dashboard: React.FC = () => {
         }
       },
     });
+  };
+
+  const handleNotificationToggle = (tripId: string, enabled: boolean) => {
+    toggleNotificationMutation.mutate({ tripId, enabled });
   };
   const clearFilters = () => {
     setFilters({
@@ -416,6 +464,7 @@ const Dashboard: React.FC = () => {
                   setSelectedTrip(trip);
                   handleDeleteTrip(trip);
                 }}
+                onNotificationToggle={handleNotificationToggle}
               />
             ))}
           </div>

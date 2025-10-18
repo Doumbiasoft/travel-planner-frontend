@@ -178,6 +178,10 @@ const TripFormModal: React.FC<TripFormModalProps> = ({
         startDate: values.dateRange[0].format("YYYY-MM-DD"),
         endDate: values.dateRange[1].format("YYYY-MM-DD"),
         budget: values.budget,
+        notifications:
+          mode === "edit" && trip?.notifications
+            ? trip.notifications
+            : { priceDrop: true, email: true },
         markers: mode === "edit" && trip ? trip.markers : [],
       };
       onSubmit(tripData);

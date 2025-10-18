@@ -1,5 +1,6 @@
 import React from "react";
-import { Calendar, DollarSign, MapPin, Edit, Trash2 } from "lucide-react";
+import { Calendar, DollarSign, MapPin, Edit, Trash2, Bell, BellOff } from "lucide-react";
+import { Switch } from "antd";
 import { formatDate } from "../utils";
 import type { ITrip } from "../types";
 
@@ -9,6 +10,7 @@ interface TripCardProps {
   onClick?: () => void;
   onEdit?: (trip: ITrip) => void;
   onDelete?: (trip: ITrip) => void;
+  onNotificationToggle?: (tripId: string, enabled: boolean) => void;
   showActions?: boolean;
 }
 
@@ -18,8 +20,16 @@ const TripCard: React.FC<TripCardProps> = ({
   onClick,
   onEdit,
   onDelete,
+  onNotificationToggle,
   showActions = true,
 }) => {
+  const handleNotificationToggle = (checked: boolean, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onNotificationToggle && trip._id) {
+      onNotificationToggle(trip._id, checked);
+    }
+  };
+
   return (
     <div
       onClick={onClick}
@@ -35,8 +45,25 @@ const TripCard: React.FC<TripCardProps> = ({
         <h3 className="font-bold text-gray-800 text-lg flex-1">
           {trip.tripName}
         </h3>
-        {showActions && (onEdit || onDelete) && (
+        {showActions && (onEdit || onDelete || onNotificationToggle) && (
           <div className="flex items-center gap-2">
+            {onNotificationToggle && (
+              <div
+                onClick={(e) => e.stopPropagation()}
+                className="flex items-center gap-2 px-3 py-1 bg-gray-50 rounded-md border border-gray-200"
+              >
+                {trip.notifications?.priceDrop ? (
+                  <Bell className="w-4 h-4 text-blue-500" />
+                ) : (
+                  <BellOff className="w-4 h-4 text-gray-400" />
+                )}
+                <Switch
+                  size="small"
+                  checked={trip.notifications?.priceDrop ?? false}
+                  onChange={(checked, e) => handleNotificationToggle(checked, e as any)}
+                />
+              </div>
+            )}
             {onEdit && (
               <button
                 onClick={(e) => {

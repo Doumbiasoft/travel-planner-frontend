@@ -50,6 +50,10 @@ export interface ITrip {
   endDate: string;
   budget: number;
   markers: { lat: number; lng: number; label: string }[];
+  notifications?: {
+    priceDrop: boolean;
+    email: boolean;
+  };
   validationStatus?: {
     isValid: boolean;
     reason: string | null;
