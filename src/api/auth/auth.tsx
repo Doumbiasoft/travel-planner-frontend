@@ -49,6 +49,12 @@ class Auth {
   }): Promise<any> {
     return await Api.patch(`api/v1/auth/update-profile`, data);
   }
+  static async updatePassword(data: {
+    currentPassword: string;
+    newPassword: string;
+  }): Promise<any> {
+    return await Api.patch(`api/v1/auth/update-password`, data);
+  }
   static async deleteAccount(data: { email: string }): Promise<any> {
     return await Api.delete(`api/v1/auth/delete-account`, data);
   }

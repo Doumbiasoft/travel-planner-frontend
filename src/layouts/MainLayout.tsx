@@ -130,7 +130,7 @@ const MainLayout: React.FC = () => {
     // {"hidden sm:inline"}
     <div className="flex items-center justify-center gap-2">
       <span className="text-sm sm:text-base ">
-        {user?.firstName} {user?.lastName}
+        {user?.firstName.split(" ")[0]} {user?.lastName}
       </span>
       {user?.isOauth && user.oauthPicture ? (
         <img
@@ -142,6 +142,7 @@ const MainLayout: React.FC = () => {
         <div className="flex flex-col items-center justify-center h-9 w-9 rounded-full object-fit-cover bg-yellow-300 text-black mr-3 border border-amber-400 shadow">
           <span className="font-bold">
             {user?.firstName
+              .split(" ")[0]
               .charAt(0)
               .toUpperCase()
               .concat(user?.lastName.charAt(0).toUpperCase())}
