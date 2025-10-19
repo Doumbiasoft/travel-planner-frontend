@@ -10,7 +10,7 @@ import HotelOfferCard from "../components/HotelOfferCard";
 import TripCard from "../components/TripCard";
 import TripFormModal from "../components/TripFormModal";
 import { useAlertNotification } from "../hooks/AlertNotification";
-import { formatDate } from "../utils";
+import { formatDate, formatPriceWithSymbol } from "../utils";
 import { ENV } from "../config/env";
 import error_broken from "../assets/images/error-broken.png";
 
@@ -350,9 +350,9 @@ const TripDetailPage: React.FC = () => {
                                   Combined Package:
                                 </span>
                                 <span className="text-2xl font-bold text-gray-800">
-                                  {offersData.recommended.currency}{" "}
-                                  {offersData.recommended.combinedPrice.toFixed(
-                                    2
+                                  {formatPriceWithSymbol(
+                                    offersData.recommended.combinedPrice,
+                                    offersData.recommended.currency
                                   )}
                                 </span>
                               </div>
@@ -360,15 +360,19 @@ const TripDetailPage: React.FC = () => {
                                 <div className="flex justify-between">
                                   <span>Flight:</span>
                                   <span>
-                                    {offersData.recommended.currency}{" "}
-                                    {offersData.recommended.flightPrice}
+                                    {formatPriceWithSymbol(
+                                      offersData.recommended.flightPrice,
+                                      offersData.recommended.currency
+                                    )}
                                   </span>
                                 </div>
                                 <div className="flex justify-between mt-1">
                                   <span>Hotel:</span>
                                   <span>
-                                    {offersData.recommended.currency}{" "}
-                                    {offersData.recommended.hotelPrice}
+                                    {formatPriceWithSymbol(
+                                      offersData.recommended.hotelPrice,
+                                      offersData.recommended.currency
+                                    )}
                                   </span>
                                 </div>
                               </div>
