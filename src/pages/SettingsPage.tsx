@@ -289,7 +289,7 @@ const SettingsPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={updateProfileMutation.isPending}
-                className="w-full md:w-auto px-6 py-2 bg-[#FFE566] text-[#2B2B2B] rounded-lg hover:bg-[#FFFF66] transition-all font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full md:w-auto px-6 py-2 bg-[#FFE566] text-[#2B2B2B] rounded-lg hover:bg-[#FFFF66] border border-[#FFE566] transition-all font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
               >
                 {updateProfileMutation.isPending && (
                   <Spin indicator={<LoadingOutlined spin />} size="small" />
@@ -395,7 +395,7 @@ const SettingsPage: React.FC = () => {
           <button
             type="submit"
             disabled={changePasswordMutation.isPending}
-            className="w-full md:w-auto px-6 py-2 bg-[#FFE566] text-[#2B2B2B] rounded-lg hover:bg-[#FFFF66] transition-all font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
+            className="w-full md:w-auto px-6 py-2 bg-[#FFE566] text-[#2B2B2B] rounded-lg hover:bg-[#FFFF66] border border-[#FFE566] transition-all font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
           >
             {changePasswordMutation.isPending && (
               <Spin indicator={<LoadingOutlined spin />} size="small" />
@@ -465,7 +465,7 @@ const SettingsPage: React.FC = () => {
           <button
             type="submit"
             disabled={!isDeleteButtonEnabled || deleteAccountMutation.isPending}
-            className="w-full md:w-auto px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
+            className="w-full md:w-auto px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 border border-red-400 transition-all font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
           >
             {deleteAccountMutation.isPending && (
               <Spin indicator={<LoadingOutlined spin />} size="small" />

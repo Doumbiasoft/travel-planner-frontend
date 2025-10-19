@@ -115,8 +115,4 @@ const routes: RouteObject[] = [
   },
 ];
 
-export const router = createBrowserRouter(routes, {
-  future: {
-    v7_normalizeFormMethod: true,
-  },
-});
+export const router = createBrowserRouter(routes);

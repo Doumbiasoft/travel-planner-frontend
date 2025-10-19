@@ -77,7 +77,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setUser(null);
       setError(null);
       googleLogout();
-      window.location.reload();
+      //window.location.reload();
     }
   }, [removeCookie]);
 
@@ -179,7 +179,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [token, logout]);
 
-  // Refresh user function that can be called manually
+  //Manually Refresh user
   const refreshUser = useCallback(async () => {
     await fetchUser();
   }, [fetchUser]);
