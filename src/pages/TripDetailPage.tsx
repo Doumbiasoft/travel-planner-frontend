@@ -324,7 +324,7 @@ const TripDetailPage: React.FC = () => {
                       {
                         key: "recommended",
                         label: "Recommended",
-                        children: (
+                        children: offersData.recommended ? (
                           <div className="space-y-6">
                             <div>
                               <h4 className="text-lg font-semibold text-gray-800 mb-4">
@@ -385,6 +385,21 @@ const TripDetailPage: React.FC = () => {
                                     : "✗ Over Budget"}
                                 </span>
                               </div>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="flex flex-col items-center justify-center py-12 text-center">
+                            <div className="bg-orange-50 p-6 rounded-lg max-w-md">
+                              <h4 className="text-lg font-semibold text-orange-800 mb-2">
+                                No Recommended Package Available
+                              </h4>
+                              <p className="text-orange-700">
+                                We couldn't find a flight and hotel combination
+                                that fits within your budget. Please check the
+                                individual flight and hotel tabs to see all
+                                available options, or consider adjusting your
+                                budget.
+                              </p>
                             </div>
                           </div>
                         ),

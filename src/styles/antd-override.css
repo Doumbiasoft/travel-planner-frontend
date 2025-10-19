@@ -23,6 +23,11 @@ a:hover {
   border-radius: 6px !important;
 }
 
+/* Select border radius */
+.ant-select-selector {
+  border-radius: 6px !important;
+}
+
 /* Modal confirm centering */
 .ant-modal-confirm {
   top: 40% !important;
