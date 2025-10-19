@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { Tabs, Spin, Modal } from "antd";
+import { Tabs, Spin, App } from "antd";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { User, Lock, Trash2 } from "lucide-react";
-import { LoadingOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
+import { LoadingOutlined } from "@ant-design/icons";
 import { useAuth } from "../hooks/AuthProvider";
 import { useAlertNotification } from "../hooks/AlertNotification";
 import unitOfWork from "../api/unit-of-work";
@@ -61,6 +61,7 @@ const DeleteAccountSchema = z.object({
 type DeleteAccountData = z.infer<typeof DeleteAccountSchema>;
 
 const SettingsPage: React.FC = () => {
+  const { modal } = App.useApp();
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const openNotification = useAlertNotification();
@@ -173,15 +174,20 @@ const SettingsPage: React.FC = () => {
 
   // Delete Account Submit Handler
   const onDeleteSubmit: SubmitHandler<DeleteAccountData> = async (data) => {
-    Modal.confirm({
-      title: "Are you sure you want to delete your account?",
-      icon: <ExclamationCircleOutlined />,
-      content:
-        "This action cannot be undone. All your data including trips and markers will be permanently deleted.",
+    modal.confirm({
+      title: (
+        <div style={{ fontSize: "18px", fontWeight: 600 }}>Delete Account</div>
+      ),
+      content: (
+        <span style={{ fontSize: "15px" }}>
+          This action cannot be undone. All your data including trips and
+          markers will be permanently deleted.
+        </span>
+      ),
       okText: "Yes, delete my account",
       okType: "danger",
       cancelText: "Cancel",
-      onOk: async () => {
+      onOk: () => {
         deleteAccountMutation.mutate(data);
       },
     });
@@ -228,7 +234,7 @@ const SettingsPage: React.FC = () => {
                   {...registerProfile("firstName")}
                   type="text"
                   disabled={user?.isOauth}
-                  className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none transition-all ${
+                  className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFE566] focus:border-transparent outline-none transition-all ${
                     user?.isOauth
                       ? "bg-gray-100 text-gray-500 cursor-not-allowed"
                       : ""
@@ -250,7 +256,7 @@ const SettingsPage: React.FC = () => {
                   {...registerProfile("lastName")}
                   type="text"
                   disabled={user?.isOauth}
-                  className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none transition-all ${
+                  className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFE566] focus:border-transparent outline-none transition-all ${
                     user?.isOauth
                       ? "bg-gray-100 text-gray-500 cursor-not-allowed"
                       : ""
@@ -299,7 +305,7 @@ const SettingsPage: React.FC = () => {
     },
   ];
 
-  // Password tab - show for all users but with different content for OAuth users
+  // Password tab
   tabItems.push({
     key: "password",
     label: (
@@ -341,7 +347,7 @@ const SettingsPage: React.FC = () => {
             <input
               {...registerPassword("currentPassword")}
               type="password"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none transition-all"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFE566] focus:border-transparent outline-none transition-all"
               placeholder="Enter current password"
               autoComplete="current-password"
             />
@@ -359,7 +365,7 @@ const SettingsPage: React.FC = () => {
             <input
               {...registerPassword("newPassword")}
               type="password"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none transition-all"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFE566] focus:border-transparent outline-none transition-all"
               placeholder="Enter new password"
               autoComplete="new-password"
             />
@@ -377,7 +383,7 @@ const SettingsPage: React.FC = () => {
             <input
               {...registerPassword("confirmPassword")}
               type="password"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none transition-all"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFE566] focus:border-transparent outline-none transition-all"
               placeholder="Confirm new password"
               autoComplete="new-password"
             />
@@ -403,7 +409,7 @@ const SettingsPage: React.FC = () => {
     ),
   });
 
-  // Delete Account Tab (always available)
+  // Delete Account Tab
   tabItems.push({
     key: "delete",
     label: (
@@ -442,7 +448,7 @@ const SettingsPage: React.FC = () => {
             <input
               {...registerDelete("email")}
               type="email"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-all"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition-all"
               placeholder={user?.email}
               autoComplete="email"
             />

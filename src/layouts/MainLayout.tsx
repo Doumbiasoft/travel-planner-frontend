@@ -130,7 +130,7 @@ const MainLayout: React.FC = () => {
     // {"hidden sm:inline"}
     <div className="flex items-center justify-center gap-2">
       <span className="text-sm sm:text-base ">
-        {user?.firstName.split(" ")[0]} {user?.lastName}
+        {user?.firstName} {user?.lastName}
       </span>
       {user?.isOauth && user.oauthPicture ? (
         <img

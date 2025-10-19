@@ -338,113 +338,130 @@ const SearchPage: React.FC = () => {
             />
           </Form.Item>
 
-          <Form.Item
-            label="Budget ($)"
-            name="budget"
-            rules={[
-              { required: true, message: "Please enter budget" },
-              {
-                type: "number",
-                min: 1,
-                message: "Budget must be greater than 0",
-              },
-            ]}
-          >
-            <InputNumber
-              placeholder="e.g., 3500"
-              size="large"
-              className="w-full"
-              style={{ borderRadius: "6px" }}
-              formatter={(value) =>
-                `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-              }
-              parser={(value) => value?.replace(/\$\s?|(,*)/g, "") as any}
-            />
-          </Form.Item>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div>
+              <div className="mb-2">
+                <h3 className="text-base font-semibold text-gray-800">
+                  Budget & Class
+                </h3>
+                <p className="text-sm text-gray-500 mt-1">
+                  Set your budget and preferred travel class
+                </p>
+              </div>
 
-          <div className="mt-6 mb-2">
-            <h3 className="text-base font-semibold text-gray-800">
-              Travel Preferences
-            </h3>
-            <p className="text-sm text-gray-500 mt-1">
-              Customize your travel search
-            </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Form.Item
+                  label="Budget ($)"
+                  name="budget"
+                  rules={[
+                    { required: true, message: "Please enter budget" },
+                    {
+                      type: "number",
+                      min: 1,
+                      message: "Budget must be greater than 0",
+                    },
+                  ]}
+                >
+                  <InputNumber
+                    placeholder="e.g., 3500"
+                    size="large"
+                    className="w-full"
+                    style={{ borderRadius: "6px" }}
+                    formatter={(value) =>
+                      `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                    }
+                    parser={(value) => value?.replace(/\$\s?|(,*)/g, "") as any}
+                  />
+                </Form.Item>
+
+                <Form.Item label="Travel Class" name="travelClass">
+                  <Select
+                    size="large"
+                    style={{ borderRadius: "6px" }}
+                    options={[
+                      { value: "ECONOMY", label: "Economy" },
+                      { value: "PREMIUM_ECONOMY", label: "Premium Economy" },
+                      { value: "BUSINESS", label: "Business" },
+                      { value: "FIRST", label: "First Class" },
+                    ]}
+                  />
+                </Form.Item>
+              </div>
+            </div>
+
+            <div>
+              <div className="mb-2">
+                <h3 className="text-base font-semibold text-gray-800">
+                  Travel Preferences
+                </h3>
+                <p className="text-sm text-gray-500 mt-1">
+                  Customize your travel search
+                </p>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2">
+                <Form.Item
+                  label="Adults (12+)"
+                  name="adults"
+                  rules={[
+                    {
+                      type: "number",
+                      min: 1,
+                      message: "At least 1 adult required",
+                    },
+                  ]}
+                >
+                  <InputNumber
+                    placeholder="1"
+                    size="large"
+                    className="w-full"
+                    style={{ borderRadius: "6px" }}
+                    min={1}
+                  />
+                </Form.Item>
+
+                <Form.Item
+                  label="Children (2-11)"
+                  name="children"
+                  rules={[
+                    {
+                      type: "number",
+                      min: 0,
+                      message: "Cannot be negative",
+                    },
+                  ]}
+                >
+                  <InputNumber
+                    placeholder="0"
+                    size="large"
+                    className="w-full"
+                    style={{ borderRadius: "6px" }}
+                    min={0}
+                  />
+                </Form.Item>
+
+                <Form.Item
+                  label="Infants (under 2)"
+                  name="infants"
+                  rules={[
+                    {
+                      type: "number",
+                      min: 0,
+                      message: "Cannot be negative",
+                    },
+                  ]}
+                >
+                  <InputNumber
+                    placeholder="0"
+                    size="large"
+                    className="w-full"
+                    style={{ borderRadius: "6px" }}
+                    min={0}
+                  />
+                </Form.Item>
+              </div>
+            </div>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Form.Item
-              label="Adults (12+)"
-              name="adults"
-              rules={[
-                {
-                  type: "number",
-                  min: 1,
-                  message: "At least 1 adult required",
-                },
-              ]}
-            >
-              <InputNumber
-                placeholder="1"
-                size="large"
-                className="w-full"
-                style={{ borderRadius: "6px" }}
-                min={1}
-              />
-            </Form.Item>
-
-            <Form.Item
-              label="Children (2-11)"
-              name="children"
-              rules={[
-                {
-                  type: "number",
-                  min: 0,
-                  message: "Cannot be negative",
-                },
-              ]}
-            >
-              <InputNumber
-                placeholder="0"
-                size="large"
-                className="w-full"
-                style={{ borderRadius: "6px" }}
-                min={0}
-              />
-            </Form.Item>
-
-            <Form.Item
-              label="Infants (under 2)"
-              name="infants"
-              rules={[
-                {
-                  type: "number",
-                  min: 0,
-                  message: "Cannot be negative",
-                },
-              ]}
-            >
-              <InputNumber
-                placeholder="0"
-                size="large"
-                className="w-full"
-                style={{ borderRadius: "6px" }}
-                min={0}
-              />
-            </Form.Item>
-          </div>
-
-          <Form.Item label="Travel Class" name="travelClass">
-            <Select
-              size="large"
-              style={{ borderRadius: "6px" }}
-              options={[
-                { value: "ECONOMY", label: "Economy" },
-                { value: "PREMIUM_ECONOMY", label: "Premium Economy" },
-                { value: "BUSINESS", label: "Business" },
-                { value: "FIRST", label: "First Class" },
-              ]}
-            />
-          </Form.Item>
 
           <Button
             type="primary"
@@ -458,6 +475,7 @@ const SearchPage: React.FC = () => {
               borderColor: "#FFE566",
               color: "#2B2B2B",
               fontWeight: 600,
+              borderRadius: "8px",
             }}
           >
             Search Offers
