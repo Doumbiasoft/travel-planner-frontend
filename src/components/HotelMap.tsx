@@ -1,5 +1,5 @@
 import React from "react";
-import { GoogleMap, Marker, InfoWindow } from "@react-google-maps/api";
+import { GoogleMap, InfoWindow, MarkerF } from "@react-google-maps/api";
 
 interface HotelMapProps {
   latitude: number;
@@ -29,6 +29,7 @@ const HotelMap: React.FC<HotelMapProps> = ({
     mapTypeControl: false,
     streetViewControl: false,
     fullscreenControl: true,
+    mapId: "TRAVEL_PLANNER_MAP", // Required for advanced markers
   };
 
   return (
@@ -43,7 +44,7 @@ const HotelMap: React.FC<HotelMapProps> = ({
           zoom={15}
           options={mapOptions}
         >
-          <Marker
+          <MarkerF
             position={center}
             icon={{
               url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",

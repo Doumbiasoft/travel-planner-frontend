@@ -12,7 +12,7 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/AuthProvider";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 import logo from "../assets/images/travel-planner-vertical-logo.png";
-const { Header, Sider, Content, Footer } = Layout;
+const { Header, Sider, Content } = Layout;
 
 // Type definitions for menu items and options
 type MenuItem = Required<MenuProps>["items"][number];
@@ -115,7 +115,7 @@ const MainLayout: React.FC = () => {
   };
 
   const {
-    token: { colorBgContainer, borderRadiusLG },
+    token: { colorBgContainer /*borderRadiusLG*/ },
   } = theme.useToken();
 
   const renderLogo = () => (

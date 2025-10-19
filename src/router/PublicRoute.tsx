@@ -6,10 +6,16 @@ interface PublicRouteProps {
 }
 
 const PublicRoute: React.FC<PublicRouteProps> = ({ children }) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return null; // or a minimal loading spinner
+  }
+
   if (isAuthenticated) {
     return <Navigate to={`/dashboard`} />;
   }
+
   return <>{children}</>;
 };
 
