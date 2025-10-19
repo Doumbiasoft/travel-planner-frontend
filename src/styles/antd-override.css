@@ -75,6 +75,22 @@ a:hover {
   line-height: 1.5 !important;
 }
 
+/* Dropdown menu border radius */
+.ant-dropdown .ant-dropdown-menu {
+  border-radius: 6px !important;
+}
+
+/* Remove dropdown menu item background color on hover */
+.ant-dropdown .ant-dropdown-menu-item:hover {
+  background-color: transparent !important;
+}
+
+/* Logout item yellow color on hover */
+.ant-dropdown .ant-dropdown-menu-item-danger:hover {
+  color: #f4d331ff !important;
+  background-color: transparent !important;
+}
+
 /* DatePicker dropdown positioning for mobile */
 .ant-picker-dropdown {
   max-width: 95vw !important;

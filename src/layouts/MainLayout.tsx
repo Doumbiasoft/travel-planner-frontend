@@ -7,7 +7,7 @@ import {
   SettingOutlined,
   PoweroffOutlined,
 } from "@ant-design/icons";
-import { Button, Layout, Menu, theme, type MenuProps } from "antd";
+import { Button, Layout, Menu, theme, Dropdown, type MenuProps } from "antd";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/AuthProvider";
 import { useMediaQuery } from "../hooks/useMediaQuery";
@@ -126,30 +126,58 @@ const MainLayout: React.FC = () => {
       </span>
     </div>
   );
+  const userMenuItems: MenuProps["items"] = [
+    {
+      key: "settings",
+      icon: <SettingOutlined />,
+      label: "Settings",
+      onClick: () => navigate("/settings"),
+    },
+    {
+      type: "divider",
+    },
+    {
+      key: "logout",
+      icon: <PoweroffOutlined />,
+      label: "Logout",
+      onClick: async () => {
+        await logout();
+        navigate("/signin");
+      },
+      danger: true,
+    },
+  ];
+
   const renderUserProfile = () => (
-    // {"hidden sm:inline"}
-    <div className="flex items-center justify-center gap-2">
-      <span className="text-sm sm:text-base ">
-        {user?.firstName} {user?.lastName}
-      </span>
-      {user?.isOauth && user.oauthPicture ? (
-        <img
-          src={user.oauthPicture}
-          alt="User Profile"
-          className="h-9 w-9 rounded-full object-fit-cover mr-3 shadow"
-        />
-      ) : (
-        <div className="flex flex-col items-center justify-center h-9 w-9 rounded-full object-fit-cover bg-yellow-300 text-black mr-3 border border-amber-400 shadow">
-          <span className="font-bold">
-            {user?.firstName
-              .split(" ")[0]
-              .charAt(0)
-              .toUpperCase()
-              .concat(user?.lastName.charAt(0).toUpperCase())}
-          </span>
-        </div>
-      )}
-    </div>
+    <Dropdown
+      menu={{ items: userMenuItems }}
+      trigger={["click", "hover"]}
+      placement="bottomRight"
+      overlayStyle={{ borderRadius: "6px" }}
+    >
+      <div className="flex items-center justify-center gap-2 cursor-pointer hover:bg-gray-100 px-3 py-2 rounded-lg transition-all">
+        <span className="text-sm sm:text-base ">
+          {user?.firstName} {user?.lastName}
+        </span>
+        {user?.isOauth && user.oauthPicture ? (
+          <img
+            src={user.oauthPicture}
+            alt="User Profile"
+            className="h-9 w-9 rounded-full object-fit-cover mr-3 shadow"
+          />
+        ) : (
+          <div className="flex flex-col items-center justify-center h-9 w-9 rounded-full object-fit-cover bg-yellow-300 text-black mr-3 border border-amber-400 shadow">
+            <span className="font-bold">
+              {user?.firstName
+                .split(" ")[0]
+                .charAt(0)
+                .toUpperCase()
+                .concat(user?.lastName.charAt(0).toUpperCase())}
+            </span>
+          </div>
+        )}
+      </div>
+    </Dropdown>
   );
 
   return (
