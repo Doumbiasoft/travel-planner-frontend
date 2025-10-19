@@ -340,6 +340,21 @@ class Api {
       timeout
     );
   }
+
+  /** Download blob (for PDFs, images, etc.) */
+  static async downloadBlob(
+    endpoint: string,
+    timeout: number = 30000
+  ): Promise<Blob> {
+    const response = await internalAxiosInstance({
+      url: endpoint,
+      method: "get",
+      responseType: "blob",
+      timeout,
+    });
+
+    return response.data;
+  }
 }
 
 export default Api;

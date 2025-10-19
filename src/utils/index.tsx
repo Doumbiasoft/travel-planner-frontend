@@ -192,3 +192,20 @@ export const formatPriceLocalized = (
     return formatPriceWithSymbol(numericPrice, currencyCode);
   }
 };
+
+export const generateDownloadLink = async (
+  blob: any,
+  fileName: string,
+  fileNamePreText?: string
+) => {
+  const url = window.URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `${
+    fileNamePreText !== undefined ? fileNamePreText + "-" : ""
+  }${fileName.toLowerCase().replaceAll(" ", "-")}.pdf`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  window.URL.revokeObjectURL(url);
+};

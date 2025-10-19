@@ -1,6 +1,7 @@
 import React from "react";
 import { MapPin, Building2 } from "lucide-react";
 import type { HotelOffer } from "../types";
+import HotelMap from "./HotelMap";
 
 interface HotelOfferCardProps {
   hotel: HotelOffer;
@@ -41,9 +42,7 @@ const HotelOfferCard: React.FC<HotelOfferCardProps> = ({
                   {hotel.chainCode}
                 </span>
               )}
-              <span className="text-gray-500">
-                Hotel ID: {hotel.hotelId}
-              </span>
+              <span className="text-gray-500">Hotel ID: {hotel.hotelId}</span>
             </div>
           </div>
         </div>
@@ -67,6 +66,15 @@ const HotelOfferCard: React.FC<HotelOfferCardProps> = ({
         </div>
       </div>
 
+      {/* Google Map - Only show for recommended hotels */}
+      {isRecommended && (
+        <HotelMap
+          latitude={hotel.geoCode.latitude}
+          longitude={hotel.geoCode.longitude}
+          hotelName={hotel.name}
+        />
+      )}
+
       {/* Location Coordinates */}
       <div className="pt-4 border-t border-gray-200">
         <div className="grid grid-cols-2 gap-4 text-sm">
@@ -84,13 +92,6 @@ const HotelOfferCard: React.FC<HotelOfferCardProps> = ({
           </div>
         </div>
       </div>
-
-      {/* Additional Info */}
-      {hotel.masterChainCode && (
-        <div className="mt-4 text-xs text-gray-500">
-          Chain: {hotel.masterChainCode}
-        </div>
-      )}
     </div>
   );
 };

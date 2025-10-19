@@ -23,11 +23,9 @@ const routes: RouteObject[] = [
         <LandingPage />
       </PublicRoute>
     ),
-    // errorElement: <NotFoundPage />,
   },
   {
     element: <MainLayout />,
-    // errorElement: <NotFoundPage />,
     children: [
       {
         path: "/dashboard",
@@ -110,6 +108,10 @@ const routes: RouteObject[] = [
         <ChangeAccountPassword />
       </PublicRoute>
     ),
+  },
+  {
+    path: "*",
+    element: <NotFoundPage />,
   },
 ];
 

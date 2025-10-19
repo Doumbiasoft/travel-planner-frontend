@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Spin, Tabs, Alert, App } from "antd";
-import { AlertCircle } from "lucide-react";
+import { Spin, Tabs, Alert, App, Button } from "antd";
+import { AlertCircle, FileDown } from "lucide-react";
 import unitOfWork from "../api/unit-of-work";
 import type { ITrip, TripOffersData } from "../types";
 import FlightOfferCard from "../components/FlightOfferCard";
@@ -10,7 +10,11 @@ import HotelOfferCard from "../components/HotelOfferCard";
 import TripCard from "../components/TripCard";
 import TripFormModal from "../components/TripFormModal";
 import { useAlertNotification } from "../hooks/AlertNotification";
-import { formatDate, formatPriceWithSymbol } from "../utils";
+import {
+  formatDate,
+  formatPriceWithSymbol,
+  generateDownloadLink,
+} from "../utils";
 import { ENV } from "../config/env";
 import error_broken from "../assets/images/error-broken.png";
 
@@ -163,6 +167,29 @@ const TripDetailPage: React.FC = () => {
     toggleNotificationMutation.mutate({ tripId, enabled });
   };
 
+  const exportPDFMutation = useMutation({
+    mutationFn: async (tripId: string) => {
+      return await unitOfWork.pdf.exportTripPDF(tripId);
+    },
+    onSuccess: async (blob) => {
+      // Create a download link
+      await generateDownloadLink(blob, tripData?.tripName.toString()!, "trip");
+      openNotification("PDF exported successfully!", "success");
+    },
+    onError: (error: any) => {
+      if (ENV.VITE_MODE === "development") {
+        console.error("Export PDF error:", error);
+      }
+      openNotification(error?.message || "Failed to export PDF", "error");
+    },
+  });
+
+  const handleExportPDF = () => {
+    if (tripId) {
+      exportPDFMutation.mutate(tripId);
+    }
+  };
+
   const {
     data: offersData,
     isLoading: isOffersLoading,
@@ -213,7 +240,25 @@ const TripDetailPage: React.FC = () => {
             <span className="font-medium">Back to Dashboard</span>
           </Link>
         </div>
-        <h1 className="text-2xl font-bold text-gray-800">Trip Details</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-gray-800">Trip Details</h1>
+          {offersData?.recommended && (
+            <Button
+              type="primary"
+              icon={<FileDown className="w-4 h-4" />}
+              onClick={handleExportPDF}
+              loading={exportPDFMutation.isPending}
+              style={{
+                backgroundColor: "#FFE566",
+                borderColor: "#FFE566",
+                color: "#2B2B2B",
+                fontWeight: 600,
+              }}
+            >
+              Export PDF
+            </Button>
+          )}
+        </div>
       </div>
 
       {isTripLoading ? (
