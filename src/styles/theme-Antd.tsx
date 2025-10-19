@@ -6,7 +6,7 @@ const themeAntd: ThemeConfig = {
   // -------------------------------
   token: {
     // Colors
-    colorPrimary: "#103B58",
+    colorPrimary: "#fad714",
     colorSuccess: "#52c41a",
     colorWarning: "#faad14",
     colorError: "#ff4d4f",
@@ -15,9 +15,6 @@ const themeAntd: ThemeConfig = {
     colorBgBase: "#fff",
 
     // Alias Colors
-    // colorLink: "#1677ff",
-    // colorLinkHover: "#69b1ff",
-    // colorLinkActive: "#0958d9",
     colorLink: "#FFFF66",
     colorLinkHover: "#faad14",
     colorLinkActive: "#faad14",

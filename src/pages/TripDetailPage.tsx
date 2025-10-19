@@ -12,6 +12,7 @@ import TripFormModal from "../components/TripFormModal";
 import { useAlertNotification } from "../hooks/AlertNotification";
 import { formatDate } from "../utils";
 import { ENV } from "../config/env";
+import error_broken from "../assets/images/error-broken.png";
 
 const TripDetailPage: React.FC = () => {
   const { modal } = App.useApp();
@@ -36,6 +37,7 @@ const TripDetailPage: React.FC = () => {
       const result: ITrip = response.data;
       return result;
     },
+    refetchInterval: 30000,
     enabled: !!tripId,
   });
 
@@ -45,6 +47,7 @@ const TripDetailPage: React.FC = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["trip", tripId] });
       queryClient.invalidateQueries({ queryKey: ["trips"] });
+      queryClient.invalidateQueries({ queryKey: ["tripOffers"] });
       openNotification("Trip updated successfully!", "success");
     },
     onError: (error: any) => {
@@ -96,12 +99,14 @@ const TripDetailPage: React.FC = () => {
           priceDrop: enabled,
           email: enabled,
         },
+        preferences: tripData.preferences,
       };
       return await unitOfWork.trip.updateTrip(tripId, updatedTrip);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["trip", tripId] });
       queryClient.invalidateQueries({ queryKey: ["trips"] });
+      queryClient.invalidateQueries({ queryKey: ["tripOffers"] });
       openNotification("Notification settings updated!", "success");
     },
     onError: (error: any) => {
@@ -172,7 +177,11 @@ const TripDetailPage: React.FC = () => {
         destinationCityCode: tripData?.destinationCityCode!,
         startDate: tripData?.startDate.split("T")[0]!,
         endDate: tripData?.endDate.split("T")[0]!,
-        budget: tripData?.budget.toString()!,
+        budget: tripData?.budget!,
+        adults: tripData?.preferences?.adults,
+        children: tripData?.preferences?.children,
+        infants: tripData?.preferences?.infants,
+        travelClass: tripData?.preferences?.travelClass,
       };
       const response = await unitOfWork.amadeus.getTripOffers(f_data);
       return response.data as TripOffersData;
@@ -202,6 +211,10 @@ const TripDetailPage: React.FC = () => {
         </div>
       ) : isTripError ? (
         <div className="flex flex-col items-center justify-center py-12 text-center">
+          <img src={error_broken} alt="" className="w-80 h-80" />
+          <a href="https://storyset.com/web" className="hidden">
+            Error broken
+          </a>
           <h3 className="text-xl font-semibold text-gray-600 mb-2">
             Error loading trip
           </h3>
@@ -281,7 +294,11 @@ const TripDetailPage: React.FC = () => {
                     <p className="text-gray-600 mt-4">Loading offers...</p>
                   </div>
                 ) : isOffersError ? (
-                  <div className="text-center py-8">
+                  <div className="flex flex-col text-center py-8  items-center justify-center">
+                    <img src={error_broken} alt="" className="w-80 h-80" />
+                    <a href="https://storyset.com/web" className="hidden">
+                      Error broken
+                    </a>
                     <p className="text-gray-500">
                       {offersError instanceof Error
                         ? offersError.message

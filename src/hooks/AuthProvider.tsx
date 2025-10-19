@@ -76,6 +76,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setUser(null);
       setError(null);
       googleLogout();
+      window.location.reload();
     }
   }, [removeCookie]);
 

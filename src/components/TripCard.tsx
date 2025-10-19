@@ -1,6 +1,14 @@
 import React from "react";
-import { Calendar, DollarSign, MapPin, Edit, Trash2, Bell, BellOff } from "lucide-react";
-import { Switch } from "antd";
+import {
+  Calendar,
+  DollarSign,
+  MapPin,
+  Edit,
+  Trash2,
+  Bell,
+  BellOff,
+} from "lucide-react";
+import { Switch, Tooltip } from "antd";
 import { formatDate } from "../utils";
 import type { ITrip } from "../types";
 
@@ -48,21 +56,28 @@ const TripCard: React.FC<TripCardProps> = ({
         {showActions && (onEdit || onDelete || onNotificationToggle) && (
           <div className="flex items-center gap-2">
             {onNotificationToggle && (
-              <div
-                onClick={(e) => e.stopPropagation()}
-                className="flex items-center gap-2 px-3 py-1 bg-gray-50 rounded-md border border-gray-200"
+              <Tooltip
+                title="Enable or disable notifications for price drops."
+                className="text-center"
               >
-                {trip.notifications?.priceDrop ? (
-                  <Bell className="w-4 h-4 text-blue-500" />
-                ) : (
-                  <BellOff className="w-4 h-4 text-gray-400" />
-                )}
-                <Switch
-                  size="small"
-                  checked={trip.notifications?.priceDrop ?? false}
-                  onChange={(checked, e) => handleNotificationToggle(checked, e as any)}
-                />
-              </div>
+                <div
+                  onClick={(e) => e.stopPropagation()}
+                  className="flex items-center gap-2 px-3 py-1 bg-gray-50 rounded-md border border-gray-200"
+                >
+                  {trip.notifications?.priceDrop ? (
+                    <Bell className="w-4 h-4 text-yellow-500" />
+                  ) : (
+                    <BellOff className="w-4 h-4 text-gray-400" />
+                  )}
+                  <Switch
+                    size="small"
+                    checked={trip.notifications?.priceDrop ?? false}
+                    onChange={(checked, e) =>
+                      handleNotificationToggle(checked, e as any)
+                    }
+                  />
+                </div>
+              </Tooltip>
             )}
             {onEdit && (
               <button

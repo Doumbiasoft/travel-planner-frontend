@@ -6,12 +6,16 @@ import {
   InputNumber,
   DatePicker,
   AutoComplete,
+  Select,
 } from "antd";
 import type { ITrip } from "../types";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 import { useQuery } from "@tanstack/react-query";
 import unitOfWork from "../api/unit-of-work";
 import { ENV } from "../config/env";
+
+dayjs.extend(utc);
 
 const { RangePicker } = DatePicker;
 
@@ -97,8 +101,15 @@ const TripFormModal: React.FC<TripFormModalProps> = ({
           tripName: trip.tripName,
           origin: `${trip.origin} (${trip.originCityCode})`,
           destination: `${trip.destination} (${trip.destinationCityCode})`,
-          dateRange: [dayjs(trip.startDate), dayjs(trip.endDate)],
+          dateRange: [
+            dayjs(trip.startDate.split("T")[0]),
+            dayjs(trip.endDate.split("T")[0]),
+          ],
           budget: trip.budget,
+          adults: trip.preferences?.adults ?? 1,
+          children: trip.preferences?.children ?? 0,
+          infants: trip.preferences?.infants ?? 0,
+          travelClass: trip.preferences?.travelClass ?? "ECONOMY",
         });
         setSelectedOrigin({ name: trip.origin, code: trip.originCityCode });
         setSelectedDestination({
@@ -182,6 +193,13 @@ const TripFormModal: React.FC<TripFormModalProps> = ({
           mode === "edit" && trip?.notifications
             ? trip.notifications
             : { priceDrop: true, email: true },
+        preferences: {
+          adults: values.adults ?? 1,
+          children: values.children ?? 0,
+          infants: values.infants ?? 0,
+          travelClass: values.travelClass ?? "ECONOMY",
+          flexibleDates: trip?.preferences?.flexibleDates ?? false,
+        },
         markers: mode === "edit" && trip ? trip.markers : [],
       };
       onSubmit(tripData);
@@ -335,6 +353,97 @@ const TripFormModal: React.FC<TripFormModalProps> = ({
               `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             }
             parser={(value) => value?.replace(/\$\s?|(,*)/g, "") as any}
+          />
+        </Form.Item>
+
+        <div className="mt-6 mb-2">
+          <h3 className="text-base font-semibold text-gray-800">
+            Travel Preferences
+          </h3>
+          <p className="text-sm text-gray-500 mt-1">
+            Customize your travel search
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Form.Item
+            label="Adults (12+)"
+            name="adults"
+            initialValue={1}
+            rules={[
+              {
+                type: "number",
+                min: 1,
+                message: "At least 1 adult required",
+              },
+            ]}
+          >
+            <InputNumber
+              placeholder="1"
+              size="large"
+              className="w-full"
+              style={{ borderRadius: "6px" }}
+              min={1}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Children (2-11)"
+            name="children"
+            initialValue={0}
+            rules={[
+              {
+                type: "number",
+                min: 0,
+                message: "Cannot be negative",
+              },
+            ]}
+          >
+            <InputNumber
+              placeholder="0"
+              size="large"
+              className="w-full"
+              style={{ borderRadius: "6px" }}
+              min={0}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Infants (under 2)"
+            name="infants"
+            initialValue={0}
+            rules={[
+              {
+                type: "number",
+                min: 0,
+                message: "Cannot be negative",
+              },
+            ]}
+          >
+            <InputNumber
+              placeholder="0"
+              size="large"
+              className="w-full"
+              style={{ borderRadius: "6px" }}
+              min={0}
+            />
+          </Form.Item>
+        </div>
+
+        <Form.Item
+          label="Travel Class"
+          name="travelClass"
+          initialValue="ECONOMY"
+        >
+          <Select
+            size="large"
+            style={{ borderRadius: "6px" }}
+            options={[
+              { value: "ECONOMY", label: "Economy" },
+              { value: "PREMIUM_ECONOMY", label: "Premium Economy" },
+              { value: "BUSINESS", label: "Business" },
+              { value: "FIRST", label: "First Class" },
+            ]}
           />
         </Form.Item>
       </Form>

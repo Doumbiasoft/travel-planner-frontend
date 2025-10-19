@@ -54,6 +54,13 @@ export interface ITrip {
     priceDrop: boolean;
     email: boolean;
   };
+  preferences?: {
+    flexibleDates?: boolean;
+    adults?: number;
+    children?: number;
+    infants?: number;
+    travelClass?: "ECONOMY" | "PREMIUM_ECONOMY" | "BUSINESS" | "FIRST";
+  };
   validationStatus?: {
     isValid: boolean;
     reason: string | null;

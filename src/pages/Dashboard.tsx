@@ -8,6 +8,7 @@ import unitOfWork from "../api/unit-of-work";
 import { Spin, App } from "antd";
 import { useAlertNotification } from "../hooks/AlertNotification";
 import trip_empty_state from "../assets/images/trip-empty-state-1.png";
+import error_broken from "../assets/images/error-broken.png";
 import { useNavigate } from "react-router-dom";
 import { ENV } from "../config/env";
 
@@ -42,6 +43,7 @@ const Dashboard: React.FC = () => {
       const response = await unitOfWork.trip.getTrips();
       return response.data || [];
     },
+    refetchInterval: 30000,
   });
 
   const createTripMutation = useMutation({
@@ -116,6 +118,7 @@ const Dashboard: React.FC = () => {
           priceDrop: enabled,
           email: enabled,
         },
+        preferences: trip.preferences,
       };
       return await unitOfWork.trip.updateTrip(tripId, updatedTrip);
     },
@@ -414,7 +417,10 @@ const Dashboard: React.FC = () => {
           </div>
         ) : isError ? (
           <div className="flex flex-col items-center justify-center py-12 text-center">
-            <X className="w-16 h-16 text-red-400 mb-4" />
+            <img src={error_broken} alt="" className="w-80 h-80" />
+            <a href="https://storyset.com/web" className="hidden">
+              Error broken
+            </a>
             <h3 className="text-xl font-semibold text-gray-600 mb-2">
               Error loading trips
             </h3>
