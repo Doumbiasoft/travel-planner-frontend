@@ -47,7 +47,7 @@ const TripDetailPage: React.FC = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["trip", tripId] });
       queryClient.invalidateQueries({ queryKey: ["trips"] });
-      queryClient.invalidateQueries({ queryKey: ["tripOffers"] });
+      queryClient.invalidateQueries({ queryKey: ["tripOffers", tripId] });
       openNotification("Trip updated successfully!", "success");
     },
     onError: (error: any) => {
@@ -106,7 +106,7 @@ const TripDetailPage: React.FC = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["trip", tripId] });
       queryClient.invalidateQueries({ queryKey: ["trips"] });
-      queryClient.invalidateQueries({ queryKey: ["tripOffers"] });
+      queryClient.invalidateQueries({ queryKey: ["tripOffers", tripId] });
       openNotification("Notification settings updated!", "success");
     },
     onError: (error: any) => {
@@ -169,7 +169,19 @@ const TripDetailPage: React.FC = () => {
     isError: isOffersError,
     error: offersError,
   } = useQuery({
-    queryKey: ["tripOffers", tripId],
+    queryKey: [
+      "tripOffers",
+      tripId,
+      tripData?.originCityCode,
+      tripData?.destinationCityCode,
+      tripData?.startDate,
+      tripData?.endDate,
+      tripData?.budget,
+      tripData?.preferences?.adults,
+      tripData?.preferences?.children,
+      tripData?.preferences?.infants,
+      tripData?.preferences?.travelClass,
+    ],
     queryFn: async () => {
       const f_data = {
         tripId: tripId!,
@@ -338,10 +350,29 @@ const TripDetailPage: React.FC = () => {
                                   Combined Package:
                                 </span>
                                 <span className="text-2xl font-bold text-gray-800">
-                                  ${offersData.recommended.flightPrice} + Hotel
+                                  {offersData.recommended.currency}{" "}
+                                  {offersData.recommended.combinedPrice.toFixed(
+                                    2
+                                  )}
                                 </span>
                               </div>
-                              <div className="mt-2 text-sm">
+                              <div className="mt-3 text-sm text-gray-600">
+                                <div className="flex justify-between">
+                                  <span>Flight:</span>
+                                  <span>
+                                    {offersData.recommended.currency}{" "}
+                                    {offersData.recommended.flightPrice}
+                                  </span>
+                                </div>
+                                <div className="flex justify-between mt-1">
+                                  <span>Hotel:</span>
+                                  <span>
+                                    {offersData.recommended.currency}{" "}
+                                    {offersData.recommended.hotelPrice}
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="mt-3 text-sm">
                                 <span
                                   className={`px-2 py-1 rounded ${
                                     offersData.recommended.fitsBudget
