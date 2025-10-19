@@ -3,7 +3,7 @@ import { Tabs, Spin, App } from "antd";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { User, Lock, Trash2 } from "lucide-react";
 import { LoadingOutlined } from "@ant-design/icons";
 import { useAuth } from "../hooks/AuthProvider";
@@ -62,10 +62,9 @@ type DeleteAccountData = z.infer<typeof DeleteAccountSchema>;
 
 const SettingsPage: React.FC = () => {
   const { modal } = App.useApp();
-  const { user, logout } = useAuth();
+  const { user, logout, refreshUser } = useAuth();
   const navigate = useNavigate();
   const openNotification = useAlertNotification();
-  const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("profile");
 
   // Profile Form
@@ -114,11 +113,10 @@ const SettingsPage: React.FC = () => {
   const updateProfileMutation = useMutation({
     mutationFn: async (data: ProfileData) =>
       await unitOfWork.auth.updateProfile(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user"] });
+    onSuccess: async () => {
+      await refreshUser();
       clearErrorsProfile();
       openNotification("Profile updated successfully!", "success");
-      //window.location.reload();
     },
     onError: (error: any) => {
       setErrorProfile("root", { message: error[0] });

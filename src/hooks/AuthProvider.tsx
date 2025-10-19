@@ -18,6 +18,7 @@ import { ENV } from "../config/env";
 interface AuthContextType {
   login: (token: string) => Promise<void>;
   logout: () => Promise<void>;
+  refreshUser: () => Promise<void>;
   user: User | null;
   isLoading: boolean;
   isAuthenticated: boolean;
@@ -149,49 +150,56 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     };
   }, [logout, setCookie]);
 
+  // Function to fetch user data
+  const fetchUser = useCallback(async () => {
+    if (!token) {
+      setUser(null);
+      setIsLoading(false);
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await unitOfWork.auth.getMe();
+      if (response.data.user) {
+        setUser(response.data.user);
+      } else {
+        logout();
+      }
+    } catch (err: any) {
+      if (ENV.VITE_MODE === "development") {
+        console.error("Failed to fetch user:", err);
+      }
+      setError("Failed to fetch user data");
+      setUser(null);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [token, logout]);
+
+  // Refresh user function that can be called manually
+  const refreshUser = useCallback(async () => {
+    await fetchUser();
+  }, [fetchUser]);
+
   // Fetch user data when token changes
   useEffect(() => {
-    const fetchUser = async () => {
-      if (!token) {
-        setUser(null);
-        setIsLoading(false);
-        return;
-      }
-
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        const response = await unitOfWork.auth.getMe();
-        if (response.data.user) {
-          setUser(response.data.user);
-        } else {
-          logout();
-        }
-      } catch (err: any) {
-        if (ENV.VITE_MODE === "development") {
-          console.error("Failed to fetch user:", err);
-        }
-        setError("Failed to fetch user data");
-        setUser(null);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     fetchUser();
-  }, [token]);
+  }, [fetchUser]);
 
   const value = useMemo(
     () => ({
       login,
       logout,
+      refreshUser,
       user,
       isLoading,
       isAuthenticated: !!token,
       error,
     }),
-    [login, logout, user, isLoading, token, error]
+    [login, logout, refreshUser, user, isLoading, token, error]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
