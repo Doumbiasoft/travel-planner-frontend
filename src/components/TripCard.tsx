@@ -49,12 +49,12 @@ const TripCard: React.FC<TripCardProps> = ({
           : "border-gray-200 bg-white hover:border-[#FFE566]"
       }`}
     >
-      <div className="flex items-start justify-between mb-3">
+      <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-3 gap-3">
         <h3 className="font-bold text-gray-800 text-lg flex-1">
           {trip.tripName}
         </h3>
         {showActions && (onEdit || onDelete || onNotificationToggle) && (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             {onNotificationToggle && (
               <Tooltip
                 title="Enable or disable notifications for price drops."
