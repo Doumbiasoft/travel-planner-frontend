@@ -200,14 +200,14 @@ const FlightOfferCard: React.FC<FlightOfferCardProps> = ({
             <Briefcase className="w-4 h-4" />
             <span>
               {flight.travelerPricings[0]?.fareDetailsBySegment[0]
-                ?.includedCheckedBags.quantity || 0}{" "}
+                ?.includedCheckedBags?.quantity || 0}{" "}
               checked bag(s)
             </span>
           </div>
           <div className="flex items-center gap-2">
             <span>
               {flight.travelerPricings[0]?.fareDetailsBySegment[0]
-                ?.includedCabinBags.quantity || 0}{" "}
+                ?.includedCabinBags?.quantity || 0}{" "}
               cabin bag(s)
             </span>
           </div>

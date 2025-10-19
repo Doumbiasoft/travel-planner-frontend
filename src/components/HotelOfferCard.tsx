@@ -49,25 +49,32 @@ const HotelOfferCard: React.FC<HotelOfferCardProps> = ({
       </div>
 
       {/* Address Section */}
-      <div className="mb-4">
-        <div className="flex items-start gap-2 text-gray-700">
-          <MapPin className="w-4 h-4 mt-1 text-blue-500" />
-          <div>
-            <div className="font-medium mb-1">
-              {hotel.address.lines.join(", ")}
-            </div>
-            <div className="text-sm text-gray-600">
-              {hotel.address.cityName}, {hotel.address.postalCode}
-            </div>
-            <div className="text-sm text-gray-600">
-              {hotel.address.countryCode}
+      {hotel.address && (
+        <div className="mb-4">
+          <div className="flex items-start gap-2 text-gray-700">
+            <MapPin className="w-4 h-4 mt-1 text-blue-500" />
+            <div>
+              {hotel.address.lines && hotel.address.lines.length > 0 && (
+                <div className="font-medium mb-1">
+                  {hotel.address.lines.join(", ")}
+                </div>
+              )}
+              <div className="text-sm text-gray-600">
+                {hotel.address.cityName}
+                {hotel.address.postalCode && `, ${hotel.address.postalCode}`}
+              </div>
+              {hotel.address.countryCode && (
+                <div className="text-sm text-gray-600">
+                  {hotel.address.countryCode}
+                </div>
+              )}
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Google Map - Only show for recommended hotels */}
-      {isRecommended && (
+      {isRecommended && hotel.geoCode && (
         <HotelMap
           latitude={hotel.geoCode.latitude}
           longitude={hotel.geoCode.longitude}
@@ -76,22 +83,24 @@ const HotelOfferCard: React.FC<HotelOfferCardProps> = ({
       )}
 
       {/* Location Coordinates */}
-      <div className="pt-4 border-t border-gray-200">
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <div>
-            <span className="text-gray-500">Latitude:</span>
-            <span className="ml-2 font-medium text-gray-700">
-              {hotel.geoCode.latitude.toFixed(5)}
-            </span>
-          </div>
-          <div>
-            <span className="text-gray-500">Longitude:</span>
-            <span className="ml-2 font-medium text-gray-700">
-              {hotel.geoCode.longitude.toFixed(5)}
-            </span>
+      {hotel.geoCode && (
+        <div className="pt-4 border-t border-gray-200">
+          <div className="grid grid-cols-2 gap-4 text-sm">
+            <div>
+              <span className="text-gray-500">Latitude:</span>
+              <span className="ml-2 font-medium text-gray-700">
+                {hotel.geoCode.latitude.toFixed(5)}
+              </span>
+            </div>
+            <div>
+              <span className="text-gray-500">Longitude:</span>
+              <span className="ml-2 font-medium text-gray-700">
+                {hotel.geoCode.longitude.toFixed(5)}
+              </span>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

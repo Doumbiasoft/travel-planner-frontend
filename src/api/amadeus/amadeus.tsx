@@ -5,7 +5,7 @@ class Amadeus {
     return await Api.get(`api/v1/amadeus/city-code?keyword=${keyword}`);
   }
   static async getTripOffers(data: {
-    tripId: string;
+    tripId?: string;
     originCityCode: string;
     destinationCityCode: string;
     startDate: string;
@@ -16,9 +16,11 @@ class Amadeus {
     infants?: number;
     travelClass?: string;
   }): Promise<any> {
-    let url = `api/v1/amadeus/search?originCityCode=${data.originCityCode}&destinationCityCode=${data.destinationCityCode}&startDate=${data.startDate}&endDate=${data.endDate}&budget=${data.budget}&tripId=${data.tripId}`;
-
+    let url = `api/v1/amadeus/search?originCityCode=${data.originCityCode}&destinationCityCode=${data.destinationCityCode}&startDate=${data.startDate}&endDate=${data.endDate}&budget=${data.budget}`;
     // Add optional parameters
+    if (data.tripId !== undefined) {
+      url += `&tripId=${data.tripId}`;
+    }
     if (data.adults !== undefined) {
       url += `&adults=${data.adults}`;
     }

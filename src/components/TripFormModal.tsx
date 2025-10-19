@@ -38,10 +38,10 @@ const TripFormModal: React.FC<TripFormModalProps> = ({
   const [originQuery, setOriginQuery] = useState("");
   const [destinationQuery, setDestinationQuery] = useState("");
   const [originOptions, setOriginOptions] = useState<
-    { label: string; value: string; cityName: string }[]
+    { label: string; value: string; iataCode: string; cityName: string }[]
   >([]);
   const [destinationOptions, setDestinationOptions] = useState<
-    { label: string; value: string; cityName: string }[]
+    { label: string; value: string; iataCode: string; cityName: string }[]
   >([]);
   const [selectedOrigin, setSelectedOrigin] = useState<{
     name: string;
@@ -73,9 +73,10 @@ const TripFormModal: React.FC<TripFormModalProps> = ({
   useEffect(() => {
     if (originData && Array.isArray(originData)) {
       setOriginOptions(
-        originData.map((city) => ({
+        originData.map((city, index) => ({
           label: `${city.name} (${city.iataCode})`,
-          value: city.iataCode,
+          value: `${city.iataCode}-${index}`,
+          iataCode: city.iataCode,
           cityName: city.name,
         }))
       );
@@ -85,9 +86,10 @@ const TripFormModal: React.FC<TripFormModalProps> = ({
   useEffect(() => {
     if (destinationData && Array.isArray(destinationData)) {
       setDestinationOptions(
-        destinationData.map((city) => ({
+        destinationData.map((city, index) => ({
           label: `${city.name} (${city.iataCode})`,
-          value: city.iataCode,
+          value: `${city.iataCode}-${index}`,
+          iataCode: city.iataCode,
           cityName: city.name,
         }))
       );
@@ -152,16 +154,16 @@ const TripFormModal: React.FC<TripFormModalProps> = ({
     }
   }, [destinationQuery, refetchDestination]);
 
-  const handleOriginSelect = (value: string, option: any) => {
-    setSelectedOrigin({ name: option.cityName, code: value });
+  const handleOriginSelect = (_value: string, option: any) => {
+    setSelectedOrigin({ name: option.cityName, code: option.iataCode });
     // Set the display value in the form
     form.setFieldsValue({
       origin: option.label,
     });
   };
 
-  const handleDestinationSelect = (value: string, option: any) => {
-    setSelectedDestination({ name: option.cityName, code: value });
+  const handleDestinationSelect = (_value: string, option: any) => {
+    setSelectedDestination({ name: option.cityName, code: option.iataCode });
     // Set the display value in the form
     form.setFieldsValue({
       destination: option.label,

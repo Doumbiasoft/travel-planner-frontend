@@ -195,15 +195,15 @@ export interface HotelOffer {
   dupeId: number;
   name: string;
   hotelId: string;
-  geoCode: {
+  geoCode?: {
     latitude: number;
     longitude: number;
   };
-  address: {
-    countryCode: string;
-    postalCode: string;
-    cityName: string;
-    lines: string[];
+  address?: {
+    countryCode?: string;
+    postalCode?: string;
+    cityName?: string;
+    lines?: string[];
   };
   masterChainCode?: string;
   lastUpdate: string;
