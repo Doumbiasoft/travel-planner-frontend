@@ -1,71 +1,91 @@
 import { type RouteObject, createBrowserRouter } from "react-router-dom";
-import MainLayout from "../layouts/MainLayout";
-import LandingPage from "../pages/LandingPage";
-import Dashboard from "../pages/Dashboard";
-import NotFoundPage from "../pages/NotFoundPage";
-import SearchPage from "../pages/SearchPage";
-import SignInPage from "../pages/auth/SignInPage";
-import SignUpPage from "../pages/auth/SignUpPage";
-import SettingsPage from "../pages/SettingsPage";
+import { lazy, Suspense } from "react";
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
-import ActivateAccountPage from "../pages/auth/ActivateAccountPage";
-import RegisteredAccountActivationInfo from "../pages/auth/RegisteredAccountActivationInfo";
-import ForgotPassword from "../pages/auth/ForgotPassword";
-import ChangeAccountPassword from "../pages/auth/ChangeAccountPassword";
-import TripDetailPage from "../pages/TripDetailPage";
-import ContactPage from "../pages/ContactPage";
+import PageLoader from "../components/PageLoader";
+
+// Lazy load all page components
+const MainLayout = lazy(() => import("../layouts/MainLayout"));
+const LandingPage = lazy(() => import("../pages/LandingPage"));
+const Dashboard = lazy(() => import("../pages/Dashboard"));
+const NotFoundPage = lazy(() => import("../pages/NotFoundPage"));
+const SearchPage = lazy(() => import("../pages/SearchPage"));
+const SignInPage = lazy(() => import("../pages/auth/SignInPage"));
+const SignUpPage = lazy(() => import("../pages/auth/SignUpPage"));
+const SettingsPage = lazy(() => import("../pages/SettingsPage"));
+const ActivateAccountPage = lazy(() => import("../pages/auth/ActivateAccountPage"));
+const RegisteredAccountActivationInfo = lazy(() => import("../pages/auth/RegisteredAccountActivationInfo"));
+const ForgotPassword = lazy(() => import("../pages/auth/ForgotPassword"));
+const ChangeAccountPassword = lazy(() => import("../pages/auth/ChangeAccountPassword"));
+const TripDetailPage = lazy(() => import("../pages/TripDetailPage"));
+const ContactPage = lazy(() => import("../pages/ContactPage"));
 
 const routes: RouteObject[] = [
   {
     path: "/",
     element: (
-      <PublicRoute>
-        <LandingPage />
-      </PublicRoute>
+      <Suspense fallback={<PageLoader />}>
+        <PublicRoute>
+          <LandingPage />
+        </PublicRoute>
+      </Suspense>
     ),
   },
   {
-    element: <MainLayout />,
+    element: (
+      <Suspense fallback={<PageLoader />}>
+        <MainLayout />
+      </Suspense>
+    ),
     children: [
       {
         path: "/dashboard",
         element: (
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
+          <Suspense fallback={<PageLoader />}>
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          </Suspense>
         ),
       },
       {
         path: "/dashboard/trips/:id",
         element: (
-          <ProtectedRoute>
-            <TripDetailPage />
-          </ProtectedRoute>
+          <Suspense fallback={<PageLoader />}>
+            <ProtectedRoute>
+              <TripDetailPage />
+            </ProtectedRoute>
+          </Suspense>
         ),
       },
       {
         path: "/search",
         element: (
-          <ProtectedRoute>
-            <SearchPage />
-          </ProtectedRoute>
+          <Suspense fallback={<PageLoader />}>
+            <ProtectedRoute>
+              <SearchPage />
+            </ProtectedRoute>
+          </Suspense>
         ),
       },
       {
         path: "/settings",
         element: (
-          <ProtectedRoute>
-            <SettingsPage />
-          </ProtectedRoute>
+          <Suspense fallback={<PageLoader />}>
+            <ProtectedRoute>
+              <SettingsPage />
+            </ProtectedRoute>
+          </Suspense>
         ),
       },
       {
         path: "/contact",
         element: (
-          <ProtectedRoute>
-            <ContactPage />
-          </ProtectedRoute>
+          <Suspense fallback={<PageLoader />}>
+            <ProtectedRoute>
+              <ContactPage />
+            </ProtectedRoute>
+          </Suspense>
         ),
       },
     ],
@@ -73,54 +93,70 @@ const routes: RouteObject[] = [
   {
     path: "/signin",
     element: (
-      <PublicRoute>
-        <SignInPage />
-      </PublicRoute>
+      <Suspense fallback={<PageLoader />}>
+        <PublicRoute>
+          <SignInPage />
+        </PublicRoute>
+      </Suspense>
     ),
   },
   {
     path: "/signup",
     element: (
-      <PublicRoute>
-        <SignUpPage />
-      </PublicRoute>
+      <Suspense fallback={<PageLoader />}>
+        <PublicRoute>
+          <SignUpPage />
+        </PublicRoute>
+      </Suspense>
     ),
   },
   {
     path: "/account/activate/:token",
     element: (
-      <PublicRoute>
-        <ActivateAccountPage />
-      </PublicRoute>
+      <Suspense fallback={<PageLoader />}>
+        <PublicRoute>
+          <ActivateAccountPage />
+        </PublicRoute>
+      </Suspense>
     ),
   },
   {
     path: "/account/created",
     element: (
-      <PublicRoute>
-        <RegisteredAccountActivationInfo />
-      </PublicRoute>
+      <Suspense fallback={<PageLoader />}>
+        <PublicRoute>
+          <RegisteredAccountActivationInfo />
+        </PublicRoute>
+      </Suspense>
     ),
   },
   {
     path: "/account/forgot-password",
     element: (
-      <PublicRoute>
-        <ForgotPassword />
-      </PublicRoute>
+      <Suspense fallback={<PageLoader />}>
+        <PublicRoute>
+          <ForgotPassword />
+        </PublicRoute>
+      </Suspense>
     ),
   },
   {
     path: "/account/change-password/:token",
     element: (
-      <PublicRoute>
-        <ChangeAccountPassword />
-      </PublicRoute>
+      <Suspense fallback={<PageLoader />}>
+        <PublicRoute>
+          <ChangeAccountPassword />
+        </PublicRoute>
+      </Suspense>
     ),
   },
   {
     path: "*",
-    element: <NotFoundPage />,
+    element: (
+      <Suspense fallback={<PageLoader />}>
+        <NotFoundPage />
+      </Suspense>
+    ),
   },
 ];
 

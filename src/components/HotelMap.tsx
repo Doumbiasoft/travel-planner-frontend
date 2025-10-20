@@ -1,5 +1,6 @@
 import React from "react";
-import { GoogleMap, InfoWindow, MarkerF } from "@react-google-maps/api";
+import { GoogleMap, InfoWindow, MarkerF, useLoadScript } from "@react-google-maps/api";
+import { ENV } from "../config/env";
 
 interface HotelMapProps {
   latitude: number;
@@ -12,6 +13,10 @@ const HotelMap: React.FC<HotelMapProps> = ({
   longitude,
   hotelName,
 }) => {
+  const { isLoaded, loadError } = useLoadScript({
+    googleMapsApiKey: ENV.VITE_GOOGLE_MAP_API_KEY,
+  });
+
   const mapContainerStyle = {
     width: "100%",
     height: "300px",
@@ -31,6 +36,32 @@ const HotelMap: React.FC<HotelMapProps> = ({
     fullscreenControl: true,
     mapId: "TRAVEL_PLANNER_MAP", // Required for advanced markers
   };
+
+  if (loadError) {
+    return (
+      <div className="mb-4">
+        <h4 className="text-sm font-semibold text-gray-700 mb-2">
+          Hotel Location
+        </h4>
+        <div className="rounded-lg overflow-hidden border border-gray-200 p-4 text-center text-red-600">
+          Error loading maps
+        </div>
+      </div>
+    );
+  }
+
+  if (!isLoaded) {
+    return (
+      <div className="mb-4">
+        <h4 className="text-sm font-semibold text-gray-700 mb-2">
+          Hotel Location
+        </h4>
+        <div className="rounded-lg overflow-hidden border border-gray-200 p-4 text-center">
+          Loading map...
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="mb-4">
