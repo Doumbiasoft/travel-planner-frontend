@@ -122,3 +122,34 @@ a:hover {
     flex-direction: column !important;
   }
 }
+
+/* Override Ant Design's input and select styles */
+/* Apply styles only for screens with a maximum width of 1024px (tablets and mobile devices) */
+@media only screen and (max-width: 1024px) {
+  input,
+  select,
+  textarea {
+    font-size: 1rem !important; /* Equivalent to text-base */
+  }
+  .ant-input,
+  .ant-select-selector,
+  .ant-picker-custom,
+  .ant-picker {
+    font-size: 1rem !important; /* Equivalent to text-base */
+  }
+  .react-quill-base,
+  .ql-editor {
+    font-size: 1rem !important; /* Equivalent to text-base */
+  }
+}
+.title-input-wrapper textarea {
+  font-size: 2.25rem !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  resize: none !important;
+  overflow: hidden !important;
+  height: auto !important;
+  width: 100% !important;
+}
