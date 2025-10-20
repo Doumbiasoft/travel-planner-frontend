@@ -24,10 +24,10 @@ const LandingPage: React.FC = () => {
                 onClick={() => navigate("/")}
               >
                 <img src={logo} alt="" className="w-16" />
-                <span className="text-[#FFFFFF] font-bold text-xl hidden lg:block">
+                <span className="text-[#FFFFFF] font-bold text-xl hidden md:block">
                   Travel Planner
                 </span>
-                <span className="text-[#FFFFFF] font-bold text-xl block lg:hidden">
+                <span className="text-[#FFFFFF] font-bold text-xl block md:hidden">
                   TP
                 </span>
               </div>
