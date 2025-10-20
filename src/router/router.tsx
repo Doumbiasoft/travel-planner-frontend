@@ -14,6 +14,7 @@ import RegisteredAccountActivationInfo from "../pages/auth/RegisteredAccountActi
 import ForgotPassword from "../pages/auth/ForgotPassword";
 import ChangeAccountPassword from "../pages/auth/ChangeAccountPassword";
 import TripDetailPage from "../pages/TripDetailPage";
+import ContactPage from "../pages/ContactPage";
 
 const routes: RouteObject[] = [
   {
@@ -56,6 +57,14 @@ const routes: RouteObject[] = [
         element: (
           <ProtectedRoute>
             <SettingsPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/contact",
+        element: (
+          <ProtectedRoute>
+            <ContactPage />
           </ProtectedRoute>
         ),
       },

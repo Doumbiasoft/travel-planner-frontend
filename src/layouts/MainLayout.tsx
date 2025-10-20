@@ -6,6 +6,7 @@ import {
   DashboardOutlined,
   SettingOutlined,
   PoweroffOutlined,
+  MailOutlined,
 } from "@ant-design/icons";
 import { Button, Layout, Menu, theme, Dropdown, type MenuProps } from "antd";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
@@ -50,6 +51,7 @@ const getMenuConfigurations = () => ({
       getItem("Dashboard", "/dashboard", <DashboardOutlined />),
       getItem("Search", "/search", <FileSearchOutlined />),
       getItem("Settings", "/settings", <SettingOutlined />),
+      getItem("Contact Us", "/contact", <MailOutlined />),
       getItem("Logout", "/signin", <PoweroffOutlined />),
     ],
     defaultOpen: [],
