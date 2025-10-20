@@ -2,6 +2,12 @@
 
 A comprehensive travel planning web application that helps users discover, plan, and manage their trips with integrated flight and hotel search capabilities powered by Amadeus API.
 
+## 📸 Screenshots
+
+|                                          1 View                                          |                                          2 View                                           |
+| :--------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------: |
+| <img src="/src/assets/images/travel-planner-screen-1.png" alt="Mobile View" width="400"> | <img src="/src/assets/images/travel-planner-screen-2.png" alt="Desktop View" width="400"> |
+
 ## 📖 Overview
 
 Travel Planner is a modern, responsive web application designed to streamline the travel planning process. Users can search for flight and hotel combinations, save trips, track price changes, and manage their travel plans all in one place. The application integrates with the Amadeus Travel API to provide real-time flight and hotel offers.
