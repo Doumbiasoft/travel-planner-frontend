@@ -13,6 +13,7 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/AuthProvider";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 import logo from "../assets/images/travel-planner-vertical-logo.png";
+import { X } from "lucide-react";
 const { Header, Sider, Content } = Layout;
 
 // Type definitions for menu items and options
@@ -121,11 +122,31 @@ const MainLayout: React.FC = () => {
   } = theme.useToken();
 
   const renderLogo = () => (
-    <div className=" flex items-center justify-center pt-5 pb-2 border-b border-amber-200 mb-3">
-      <img src={logo} alt="Travel Planner logo" className="h-9" />
-      <span className="font-bold text-xl text-white">
-        {collapsed ? "" : "Travel Planner"}
-      </span>
+    <div className=" flex flex-col w-full pt-5 pb-2 border-b border-amber-200 mb-3">
+      <div className="flex items-end justify-end w-full">
+        {isMobile && (
+          <div
+            className="flex flex-col w-fit mb-3 mr-3 bg-[#fbde68] rounded-full"
+            onClick={() => {
+              if (isMobile) {
+                setCollapsed(true);
+              }
+            }}
+          >
+            <X
+              size={32}
+              className="text-black cursor-pointer hover:text-white w-fit"
+            />
+          </div>
+        )}
+      </div>
+
+      <div className="flex flex-row w-full items-center justify-center">
+        <img src={logo} alt="Travel Planner logo" className="h-9" />
+        <span className="font-bold text-xl text-white">
+          {collapsed ? "" : "Travel Planner"}
+        </span>
+      </div>
     </div>
   );
   const userMenuItems: MenuProps["items"] = [
@@ -133,7 +154,12 @@ const MainLayout: React.FC = () => {
       key: "settings",
       icon: <SettingOutlined />,
       label: "Settings",
-      onClick: () => navigate("/settings"),
+      onClick: () => {
+        if (isMobile) {
+          setCollapsed(true);
+        }
+        navigate("/settings");
+      },
     },
     {
       type: "divider",
@@ -143,6 +169,9 @@ const MainLayout: React.FC = () => {
       icon: <PoweroffOutlined />,
       label: "Logout",
       onClick: async () => {
+        if (isMobile) {
+          setCollapsed(true);
+        }
         await logout();
         navigate("/signin");
       },
@@ -256,31 +285,26 @@ const MainLayout: React.FC = () => {
             {user && renderUserProfile()}
           </div>
         </Header>
-        {isMobile && !collapsed ? null : (
-          <>
-            <Content
-              className="flex flex-col"
-              style={{
-                padding: 24,
-                overflow: "auto",
-                flex: 1,
-              }}
-            >
-              <Outlet />
-            </Content>
 
-            {/* <Footer
-              style={{
-                textAlign: "center",
-                backgroundColor: "transparent",
-                paddingTop: "10px",
-                paddingBottom: "10px",
-              }}
-            >
-              <p>&copy; 2025 Travel Planner. All rights reserved.</p>
-            </Footer> */}
-          </>
-        )}
+        <Content
+          className={`flex flex-col`}
+          style={{
+            padding: 24,
+            overflow: "auto",
+            flex: 1,
+          }}
+          onClick={() => {
+            if (isMobile) {
+              setCollapsed(true);
+            }
+          }}
+        >
+          {isMobile && !collapsed ? null : (
+            <>
+              <Outlet />
+            </>
+          )}
+        </Content>
       </Layout>
     </Layout>
   );

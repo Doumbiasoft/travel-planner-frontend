@@ -21,7 +21,10 @@ createRoot(document.getElementById("root")!).render(
         <AlertNotificationProvider>
           <AuthProvider>
             <GoogleOAuthProvider clientId={ENV.VITE_GOOGLE_CLIENT_ID}>
-              <LoadScript googleMapsApiKey={ENV.VITE_GOOGLE_MAP_API_KEY}>
+              <LoadScript
+                googleMapsApiKey={ENV.VITE_GOOGLE_MAP_API_KEY}
+                loadingElement={<></>}
+              >
                 <ConfigProvider theme={themeAntd}>
                   <AntApp>
                     <App />
