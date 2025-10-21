@@ -12,7 +12,7 @@ A comprehensive travel planning web application that helps users discover, plan,
 
 Travel Planner is a modern, responsive web application designed to streamline the travel planning process. Users can search for flight and hotel combinations, save trips, track price changes, and manage their travel plans all in one place. The application integrates with the Amadeus Travel API to provide real-time flight and hotel offers.
 
-## 🌐 Live at: <https://travel-planner-s.netlify.app>
+## 🌐 Live at: <https://travel-planner.doumbiasoft.com>
 
 ### 🔗 The Backend Repository URL:
 
