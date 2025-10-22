@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Spin, Tabs, Alert, App, Button } from "antd";
-import { AlertCircle, FileDown } from "lucide-react";
+import { AlertCircle, FileDown, RefreshCw } from "lucide-react";
 import unitOfWork from "../api/unit-of-work";
 import type { ITrip, TripOffersData } from "../types";
 import FlightOfferCard from "../components/FlightOfferCard";
@@ -27,6 +27,10 @@ const TripDetailPage: React.FC = () => {
   const tripId = urlParams.id;
   const [modalOpen, setModalOpen] = useState(false);
   const [editingTrip, setEditingTrip] = useState<ITrip | null>(null);
+  const [refreshOffers, setRefreshOffers] = useState(false);
+
+  // Track previous trip data to detect changes
+  const prevTripDataRef = useRef<ITrip | null>(null);
 
   // Fetch trip details
   const {
@@ -41,7 +45,7 @@ const TripDetailPage: React.FC = () => {
       const result: ITrip = response.data;
       return result;
     },
-    refetchInterval: 30000,
+    refetchInterval: 60000,
     enabled: !!tripId,
   });
 
@@ -51,7 +55,8 @@ const TripDetailPage: React.FC = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["trip", tripId] });
       queryClient.invalidateQueries({ queryKey: ["trips"] });
-      queryClient.invalidateQueries({ queryKey: ["tripOffers", tripId] });
+      // Set refreshOffers to true to fetch new offers after trip update
+      setRefreshOffers(true);
       openNotification("Trip updated successfully!", "success");
     },
     onError: (error: any) => {
@@ -110,7 +115,7 @@ const TripDetailPage: React.FC = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["trip", tripId] });
       queryClient.invalidateQueries({ queryKey: ["trips"] });
-      queryClient.invalidateQueries({ queryKey: ["tripOffers", tripId] });
+
       openNotification("Notification settings updated!", "success");
     },
     onError: (error: any) => {
@@ -123,6 +128,39 @@ const TripDetailPage: React.FC = () => {
       );
     },
   });
+
+  // Detect when trip data changes (from dashboard update or other sources)
+  useEffect(() => {
+    if (!tripData) return;
+
+    const prev = prevTripDataRef.current;
+
+    // If this is the first load, just store the data
+    if (!prev) {
+      prevTripDataRef.current = tripData;
+      return;
+    }
+
+    // Check if any offer-relevant fields have changed
+    const hasChanged =
+      prev.originCityCode !== tripData.originCityCode ||
+      prev.destinationCityCode !== tripData.destinationCityCode ||
+      prev.startDate !== tripData.startDate ||
+      prev.endDate !== tripData.endDate ||
+      prev.budget !== tripData.budget ||
+      prev.preferences?.adults !== tripData.preferences?.adults ||
+      prev.preferences?.children !== tripData.preferences?.children ||
+      prev.preferences?.infants !== tripData.preferences?.infants ||
+      prev.preferences?.travelClass !== tripData.preferences?.travelClass;
+
+    if (hasChanged) {
+      // Trip data changed, refresh offers
+      setRefreshOffers(true);
+    }
+
+    // Update the ref with current data
+    prevTripDataRef.current = tripData;
+  }, [tripData]);
 
   const handleOpenEditModal = (trip: ITrip) => {
     setEditingTrip(trip);
@@ -208,6 +246,7 @@ const TripDetailPage: React.FC = () => {
       tripData?.preferences?.children,
       tripData?.preferences?.infants,
       tripData?.preferences?.travelClass,
+      refreshOffers,
     ],
     queryFn: async () => {
       const f_data = {
@@ -221,8 +260,13 @@ const TripDetailPage: React.FC = () => {
         children: tripData?.preferences?.children,
         infants: tripData?.preferences?.infants,
         travelClass: tripData?.preferences?.travelClass,
+        refreshOffers: refreshOffers,
       };
       const response = await unitOfWork.amadeus.getTripOffers(f_data);
+      // After fetching with refresh, reset
+      if (refreshOffers) {
+        setRefreshOffers(false);
+      }
       return response.data as TripOffersData;
     },
     enabled: !!tripData,
@@ -294,9 +338,23 @@ const TripDetailPage: React.FC = () => {
 
           {/* Trip Offers Section */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 className="text-xl font-bold text-gray-800 mb-2">
-              Available Offers
-            </h3>
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-xl font-bold text-gray-800">
+                Available Offers
+              </h3>
+              {!tripData.validationStatus?.isValid ? null : (
+                <Button
+                  type="default"
+                  icon={<RefreshCw className="w-4 h-4" />}
+                  onClick={() => setRefreshOffers(true)}
+                  loading={isOffersLoading && refreshOffers}
+                  disabled={isOffersLoading}
+                  className="flex items-center gap-2"
+                >
+                  {offersData?.cached ? "Refresh Offers" : "Refreshing..."}
+                </Button>
+              )}
+            </div>
 
             {/* Validation Status Alert */}
             {tripData.validationStatus && !tripData.validationStatus.isValid ? (
@@ -340,9 +398,17 @@ const TripDetailPage: React.FC = () => {
             ) : (
               <>
                 {offersData?.tip && (
-                  <p className="text-sm text-gray-600 mb-6 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                    💡 {offersData.tip}
-                  </p>
+                  <div className="mb-6 space-y-2">
+                    <p className="text-sm text-gray-600 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                      💡 {offersData.tip}
+                    </p>
+                    {offersData?.cached && (
+                      <p className="text-xs text-gray-500 p-2 bg-gray-50 rounded border border-gray-200">
+                        ℹ️ Showing cached offers. Click "Refresh Offers" to get
+                        the latest prices.
+                      </p>
+                    )}
+                  </div>
                 )}
 
                 {isOffersLoading ? (

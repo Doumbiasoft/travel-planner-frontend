@@ -15,6 +15,7 @@ class Amadeus {
     children?: number;
     infants?: number;
     travelClass?: string;
+    refreshOffers?: boolean;
   }): Promise<any> {
     let url = `api/v1/amadeus/search?originCityCode=${data.originCityCode}&destinationCityCode=${data.destinationCityCode}&startDate=${data.startDate}&endDate=${data.endDate}&budget=${data.budget}`;
     // Add optional parameters
@@ -32,6 +33,9 @@ class Amadeus {
     }
     if (data.travelClass) {
       url += `&travelClass=${data.travelClass}`;
+    }
+    if (data.refreshOffers !== undefined) {
+      url += `&refreshOffers=${data.refreshOffers}`;
     }
 
     return await Api.get(url, undefined, undefined, 1, 30000);
