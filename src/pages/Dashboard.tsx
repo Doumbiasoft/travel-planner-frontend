@@ -43,7 +43,7 @@ const Dashboard: React.FC = () => {
       const response = await unitOfWork.trip.getTrips();
       return response.data || [];
     },
-    refetchInterval: 30000,
+    refetchInterval: 60000,
   });
 
   const createTripMutation = useMutation({

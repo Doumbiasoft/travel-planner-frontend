@@ -228,4 +228,5 @@ export interface TripOffersData {
   flights: FlightOffer[];
   hotels: HotelOffer[];
   currency: string;
+  cached?: boolean;
 }
