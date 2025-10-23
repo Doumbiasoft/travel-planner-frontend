@@ -38,8 +38,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           expires,
           secure: ENV.VITE_MODE === "production",
           sameSite: "lax",
+          path: "/",
         });
-        setCookie(TOKEN_COOKIE_NAME, newToken);
         setToken(newToken);
       } catch (err) {
         setError("Login failed");
@@ -89,6 +89,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // Set up refresh interceptor to handle token refresh
   useLayoutEffect(() => {
+    // Shared promise to prevent multiple simultaneous refresh attempts
+    let isRefreshing = false;
+    let refreshPromise: Promise<string> | null = null;
+
     const refreshInterceptor = internalAxiosInstance.interceptors.response.use(
       (response) => response,
       async (error) => {
@@ -102,30 +106,53 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         ) {
           originalRequest._retry = true;
 
+          // If a refresh is already in progress, wait for it
+          if (isRefreshing && refreshPromise) {
+            try {
+              const newToken = await refreshPromise;
+              originalRequest.headers.Authorization = `Bearer ${newToken}`;
+              return internalAxiosInstance(originalRequest);
+            } catch (refreshError) {
+              return Promise.reject(refreshError);
+            }
+          }
+
+          // Start a new refresh process
+          isRefreshing = true;
+          refreshPromise = (async () => {
+            try {
+              const response = await unitOfWork.auth.refreshToken();
+              const newToken = response.data.accessToken;
+
+              // Save new token to cookie with 7 days expiration
+              const expires = new Date();
+              expires.setDate(expires.getDate() + 7);
+              setCookie(TOKEN_COOKIE_NAME, newToken, {
+                expires,
+                secure: ENV.VITE_MODE === "production",
+                sameSite: "lax",
+                path: "/",
+              });
+
+              setToken(newToken);
+              return newToken;
+            } catch (refreshError) {
+              logout();
+              setError("Session expired. Please login again.");
+              throw refreshError;
+            } finally {
+              isRefreshing = false;
+              refreshPromise = null;
+            }
+          })();
+
           try {
-            const response = await unitOfWork.auth.refreshToken();
-            const newToken = response.data.accessToken;
-
-            // Save new token to cookie
-            const expires = new Date();
-            expires.setDate(expires.getDate() + 7);
-            setCookie(TOKEN_COOKIE_NAME, newToken, {
-              expires,
-              secure: ENV.VITE_MODE === "production",
-              sameSite: "lax",
-            });
-            setCookie(TOKEN_COOKIE_NAME, newToken);
-
-            setToken(newToken);
-
+            const newToken = await refreshPromise;
             // Update the failed request with new token
             originalRequest.headers.Authorization = `Bearer ${newToken}`;
-
             // Retry the original request with new token
             return internalAxiosInstance(originalRequest);
           } catch (refreshError) {
-            logout();
-            setError("Session expired. Please login again.");
             return Promise.reject(refreshError);
           }
         }

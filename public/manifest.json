@@ -1,0 +1,28 @@
+{
+  "theme_color": "#fad714",
+  "background_color": "#242424",
+  "icons": [
+    {
+      "purpose": "maskable",
+      "sizes": "512x512",
+      "src": "/assets/icon512_maskable.png",
+      "type": "image/png"
+    },
+    {
+      "purpose": "any",
+      "sizes": "512x512",
+      "src": "/assets/icon512_rounded.png",
+      "type": "image/png"
+    }
+  ],
+  "orientation": "portrait",
+  "display": "standalone",
+  "dir": "auto",
+  "lang": "en-US",
+  "name": "Travel Planner",
+  "short_name": "TP",
+  "start_url": "https://travel-planner.doumbiasoft.com",
+  "scope": "https://travel-planner.doumbiasoft.com",
+  "description": "Travel Planner is a modern, responsive web application designed to streamline the travel planning process. Users can search for flight and hotel combinations, save trips, track price changes, and manage their travel plans all in one place.",
+  "id": "https://travel-planner.doumbiasoft.com"
+}
