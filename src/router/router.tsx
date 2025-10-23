@@ -1,8 +1,11 @@
 import { type RouteObject, createBrowserRouter } from "react-router-dom";
 import { lazy, Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
 import PageLoader from "../components/PageLoader";
+import RouteErrorFallback from "../components/RouteErrorFallback";
+import { logError } from "../utils/errorLogging";
 
 // Lazy load all page components
 const MainLayout = lazy(() => import("../layouts/MainLayout"));
@@ -25,6 +28,29 @@ const ChangeAccountPassword = lazy(
 );
 const TripDetailPage = lazy(() => import("../pages/TripDetailPage"));
 const ContactPage = lazy(() => import("../pages/ContactPage"));
+
+// Helper to wrap routes with error boundary
+const withErrorBoundary = (
+  element: React.ReactNode,
+  routeName: string
+): React.ReactNode => (
+  <ErrorBoundary
+    FallbackComponent={RouteErrorFallback}
+    onError={(error, errorInfo) => {
+      logError({
+        error,
+        errorInfo,
+        context: `Route: ${routeName}`,
+      });
+    }}
+    onReset={() => {
+      // Reset route state - reload the current page
+      window.location.reload();
+    }}
+  >
+    {element}
+  </ErrorBoundary>
+);
 
 const routes: RouteObject[] = [
   {
@@ -51,42 +77,46 @@ const routes: RouteObject[] = [
     children: [
       {
         path: "/dashboard",
-        element: (
+        element: withErrorBoundary(
           <Suspense fallback={<PageLoader />}>
             <ProtectedRoute>
               <Dashboard />
             </ProtectedRoute>
-          </Suspense>
+          </Suspense>,
+          "Dashboard"
         ),
       },
       {
         path: "/dashboard/trips/:id",
-        element: (
+        element: withErrorBoundary(
           <Suspense fallback={<PageLoader />}>
             <ProtectedRoute>
               <TripDetailPage />
             </ProtectedRoute>
-          </Suspense>
+          </Suspense>,
+          "Trip Detail"
         ),
       },
       {
         path: "/search",
-        element: (
+        element: withErrorBoundary(
           <Suspense fallback={<PageLoader />}>
             <ProtectedRoute>
               <SearchPage />
             </ProtectedRoute>
-          </Suspense>
+          </Suspense>,
+          "Search"
         ),
       },
       {
         path: "/settings",
-        element: (
+        element: withErrorBoundary(
           <Suspense fallback={<PageLoader />}>
             <ProtectedRoute>
               <SettingsPage />
             </ProtectedRoute>
-          </Suspense>
+          </Suspense>,
+          "Settings"
         ),
       },
       {
