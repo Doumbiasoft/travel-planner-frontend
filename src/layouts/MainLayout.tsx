@@ -182,7 +182,7 @@ const MainLayout: React.FC = () => {
   const renderUserProfile = () => (
     <Dropdown
       menu={{ items: userMenuItems }}
-      trigger={["click", "hover"]}
+      trigger={["click"]}
       placement="bottomRight"
       overlayStyle={{ borderRadius: "6px" }}
     >
