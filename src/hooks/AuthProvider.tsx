@@ -32,13 +32,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       try {
         setError(null);
         // Save token to cookie with 7 days expiration
-        const expires = new Date();
-        expires.setDate(expires.getDate() + 7);
-        setCookie(TOKEN_COOKIE_NAME, newToken, {
-          expires,
-          secure: ENV.VITE_MODE === "production",
-          sameSite: "lax",
-        });
+        // const expires = new Date();
+        // expires.setDate(expires.getDate() + 7);
+        // setCookie(TOKEN_COOKIE_NAME, newToken, {
+        //   expires,
+        //   secure: ENV.VITE_MODE === "production",
+        //   sameSite: "lax",
+        // });
+        setCookie(TOKEN_COOKIE_NAME, newToken);
         setToken(newToken);
       } catch (err) {
         setError("Login failed");
@@ -104,13 +105,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             const newToken = response.data.accessToken;
 
             // Save new token to cookie
-            const expires = new Date();
-            expires.setDate(expires.getDate() + 7);
-            setCookie(TOKEN_COOKIE_NAME, newToken, {
-              expires,
-              secure: ENV.VITE_MODE === "production",
-              sameSite: "lax",
-            });
+            // const expires = new Date();
+            // expires.setDate(expires.getDate() + 7);
+            // setCookie(TOKEN_COOKIE_NAME, newToken, {
+            //   expires,
+            //   secure: ENV.VITE_MODE === "production",
+            //   sameSite: "lax",
+            // });
+            setCookie(TOKEN_COOKIE_NAME, newToken);
 
             setToken(newToken);
 
