@@ -6,7 +6,7 @@ import { type SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import unitOfWork from "../../api/unit-of-work";
-import { useAuth } from "../../hooks/AuthProvider";
+import { useAuth } from "../../hooks/useAuth";
 import { useAlertNotification } from "../../hooks/AlertNotification";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";

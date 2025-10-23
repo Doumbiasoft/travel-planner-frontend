@@ -10,7 +10,7 @@ import {
 } from "@ant-design/icons";
 import { Button, Layout, Menu, theme, Dropdown, type MenuProps } from "antd";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks/AuthProvider";
+import { useAuth } from "../hooks/useAuth";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 import logo from "../assets/images/travel-planner-vertical-logo.png";
 import { X } from "lucide-react";

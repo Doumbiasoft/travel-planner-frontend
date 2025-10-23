@@ -1,6 +1,4 @@
 import {
-  createContext,
-  useContext,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -14,18 +12,7 @@ import { internalAxiosInstance } from "../api/api-base-config";
 import { HttpStatus } from "../helpers/http-status-codes";
 import type { User } from "../types";
 import { ENV } from "../config/env";
-
-interface AuthContextType {
-  login: (token: string) => Promise<void>;
-  logout: () => Promise<void>;
-  refreshUser: () => Promise<void>;
-  user: User | null;
-  isLoading: boolean;
-  isAuthenticated: boolean;
-  error: string | null;
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+import { AuthContext } from "./AuthContext";
 
 const TOKEN_COOKIE_NAME = "accessToken";
 
@@ -133,8 +120,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             // Retry the original request with new token
             return internalAxiosInstance(originalRequest);
           } catch (refreshError) {
-            setToken(null);
-            setUser(null);
             logout();
             setError("Session expired. Please login again.");
             return Promise.reject(refreshError);
@@ -165,8 +150,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       const response = await unitOfWork.auth.getMe();
       if (response.data.user) {
         setUser(response.data.user);
-      } else {
-        logout();
       }
     } catch (err: any) {
       if (ENV.VITE_MODE === "development") {
@@ -203,12 +186,4 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-};
-
-export const useAuth = (): AuthContextType => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth hook must be used within an AuthProvider");
-  }
-  return context;
 };

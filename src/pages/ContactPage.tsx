@@ -7,7 +7,7 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { Mail, MessageSquare } from "lucide-react";
 import unitOfWork from "../api/unit-of-work";
 import { useAlertNotification } from "../hooks/AlertNotification";
-import { useAuth } from "../hooks/AuthProvider";
+import { useAuth } from "../hooks/useAuth";
 
 // Contact Form Schema
 const ContactSchema = z.object({

@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { User, Lock, Trash2 } from "lucide-react";
 import { LoadingOutlined } from "@ant-design/icons";
-import { useAuth } from "../hooks/AuthProvider";
+import { useAuth } from "../hooks/useAuth";
 import { useAlertNotification } from "../hooks/AlertNotification";
 import unitOfWork from "../api/unit-of-work";
 import { weakPasswordRegex } from "../helpers/http-status-codes";
