@@ -45,7 +45,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         setError("Login failed");
         setToken(null);
         setUser(null);
-        throw err;
+        if (ENV.VITE_MODE === "development") {
+          throw err;
+        }
       }
     },
     [setCookie]

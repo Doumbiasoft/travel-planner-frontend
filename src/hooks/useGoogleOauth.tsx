@@ -71,7 +71,9 @@ export const useGoogleOauth = (login: (token: string) => Promise<void>) => {
           openNotification("Google sign-in failed", "error");
         }
       } catch (error: any) {
-        console.error("Google auth error:", error);
+        if (ENV.VITE_MODE === "development") {
+          console.error("Google auth error:", error);
+        }
         openNotification(
           error?.response?.data?.message || "Google sign-in failed",
           "error"

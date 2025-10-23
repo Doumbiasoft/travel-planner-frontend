@@ -1,5 +1,6 @@
 import React, { createContext, useContext, type ReactNode } from "react";
 import { message } from "antd"; // Ensure you have antd imported
+import { ENV } from "../config/env";
 
 type AlertNotificationContextType = (msg: string, type: any) => void;
 
@@ -26,7 +27,9 @@ export const AlertNotificationProvider: React.FC<
         content: msg,
       })
       .then((response) => {
-        console.log(response);
+        if (ENV.VITE_MODE === "development") {
+          console.log(response);
+        }
       });
   };
 
