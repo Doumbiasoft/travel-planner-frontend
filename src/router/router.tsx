@@ -13,10 +13,16 @@ const SearchPage = lazy(() => import("../pages/SearchPage"));
 const SignInPage = lazy(() => import("../pages/auth/SignInPage"));
 const SignUpPage = lazy(() => import("../pages/auth/SignUpPage"));
 const SettingsPage = lazy(() => import("../pages/SettingsPage"));
-const ActivateAccountPage = lazy(() => import("../pages/auth/ActivateAccountPage"));
-const RegisteredAccountActivationInfo = lazy(() => import("../pages/auth/RegisteredAccountActivationInfo"));
+const ActivateAccountPage = lazy(
+  () => import("../pages/auth/ActivateAccountPage")
+);
+const RegisteredAccountActivationInfo = lazy(
+  () => import("../pages/auth/RegisteredAccountActivationInfo")
+);
 const ForgotPassword = lazy(() => import("../pages/auth/ForgotPassword"));
-const ChangeAccountPassword = lazy(() => import("../pages/auth/ChangeAccountPassword"));
+const ChangeAccountPassword = lazy(
+  () => import("../pages/auth/ChangeAccountPassword")
+);
 const TripDetailPage = lazy(() => import("../pages/TripDetailPage"));
 const ContactPage = lazy(() => import("../pages/ContactPage"));
 
@@ -28,6 +34,11 @@ const routes: RouteObject[] = [
         <PublicRoute>
           <LandingPage />
         </PublicRoute>
+      </Suspense>
+    ),
+    errorElement: (
+      <Suspense fallback={<PageLoader />}>
+        <NotFoundPage />
       </Suspense>
     ),
   },
