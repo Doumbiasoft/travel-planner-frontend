@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "antd";
-import { Home, RefreshCw, AlertCircle } from "lucide-react";
+import { Home, RefreshCw } from "lucide-react";
 import error_broken from "../assets/images/error-broken.png";
 import { ENV } from "../config/env";
 
@@ -22,10 +22,6 @@ const ErrorFallback: React.FC<ErrorFallbackProps> = ({
             alt="Something went wrong"
             className="w-80 h-80 md:w-96 md:h-96 object-contain animate-pulse"
           />
-        </div>
-
-        <div className="mb-4 flex justify-center">
-          <AlertCircle className="w-16 h-16 text-red-500" />
         </div>
 
         <h1 className="text-4xl md:text-6xl font-bold text-gray-800 mb-4">
