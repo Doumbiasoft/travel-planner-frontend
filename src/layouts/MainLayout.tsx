@@ -66,7 +66,7 @@ const getMenuConfigurations = () => ({
 const MainLayout: React.FC = () => {
   const isMobile = useMediaQuery(768);
   const [collapsed, setCollapsed] = useState(isMobile);
-  const [showFooter, setShowFooter] = useState(true);
+  const [showFooter, setShowFooter] = useState(false);
   const contentRef = React.useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -126,12 +126,19 @@ const MainLayout: React.FC = () => {
       }
     };
 
-    // Check on mount and location change
+    // Check immediately
     checkScrollable();
 
-    // Check again after a short delay to account for content loading
-    const timer = setTimeout(checkScrollable, 100);
-    return () => clearTimeout(timer);
+    // Check multiple times to catch content loading
+    const timer1 = setTimeout(checkScrollable, 100);
+    const timer2 = setTimeout(checkScrollable, 300);
+    const timer3 = setTimeout(checkScrollable, 500);
+
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+      clearTimeout(timer3);
+    };
   }, [location.pathname]);
 
   // Handle scroll to show/hide footer
