@@ -38,6 +38,11 @@ const SignUpSchema = z
     confirmPassword: z
       .string()
       .nonempty({ message: "Confirm password is required" }),
+    acceptTerms: z
+      .boolean()
+      .refine((val) => val === true, {
+        message: "You must accept the Terms of Service and Privacy Policy",
+      }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
@@ -214,6 +219,40 @@ const SignUpPage: React.FC = () => {
               )}
             </label>
 
+            {/* Terms and Privacy Policy Acceptance */}
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                {...register("acceptTerms")}
+                type="checkbox"
+                className="mt-1 h-4 w-4 rounded border-[#B3B347]/30 bg-[#FFFFFF]/10 text-[#FFE566] focus:ring-2 focus:ring-[#FFFF66] cursor-pointer"
+              />
+              <span className="text-sm text-[#D4D4D4]">
+                I agree to the{" "}
+                <a
+                  href="/terms-of-service.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#FFFF66] hover:text-[#FFE566] underline"
+                >
+                  Terms of Service
+                </a>{" "}
+                and{" "}
+                <a
+                  href="/privacy-policy.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#FFFF66] hover:text-[#FFE566] underline"
+                >
+                  Privacy Policy
+                </a>
+              </span>
+            </label>
+            {errors.acceptTerms && (
+              <div className="text-red-500 text-sm -mt-3">
+                {errors.acceptTerms.message}
+              </div>
+            )}
+
             <button
               title="submit"
               type="submit"
@@ -269,6 +308,27 @@ const SignUpPage: React.FC = () => {
                 Sign In
               </Link>
             </p>
+          </div>
+
+          {/* Privacy Policy and Terms of Service Links */}
+          <div className="mt-6 pt-6 border-t border-[#B3B347]/30 flex flex-col sm:flex-row justify-center items-center gap-2 sm:gap-3">
+            <a
+              href="/privacy-policy.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-[#D4D4D4] hover:text-[#FFFF66] transition-colors underline"
+            >
+              Privacy Policy
+            </a>
+            <span className="hidden sm:inline text-[#D4D4D4]/50 text-xs">•</span>
+            <a
+              href="/terms-of-service.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-[#D4D4D4] hover:text-[#FFFF66] transition-colors underline"
+            >
+              Terms of Service
+            </a>
           </div>
         </div>
       </div>

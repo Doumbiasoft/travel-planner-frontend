@@ -195,6 +195,27 @@ const SignInPage: React.FC = () => {
               </Link>
             </p>
           </div>
+
+          {/* Privacy Policy and Terms of Service Links */}
+          <div className="mt-6 pt-6 border-t border-[#B3B347]/30 flex flex-col sm:flex-row justify-center items-center gap-2 sm:gap-3">
+            <a
+              href="/privacy-policy.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-[#D4D4D4] hover:text-[#FFFF66] transition-colors underline"
+            >
+              Privacy Policy
+            </a>
+            <span className="hidden sm:inline text-[#D4D4D4]/50 text-xs">•</span>
+            <a
+              href="/terms-of-service.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-[#D4D4D4] hover:text-[#FFFF66] transition-colors underline"
+            >
+              Terms of Service
+            </a>
+          </div>
         </div>
       </div>
     </div>

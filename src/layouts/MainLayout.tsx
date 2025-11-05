@@ -14,7 +14,7 @@ import { useAuth } from "../hooks/useAuth";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 import logo from "../assets/images/travel-planner-vertical-logo.png";
 import { X } from "lucide-react";
-const { Header, Sider, Content } = Layout;
+const { Header, Sider, Content, Footer } = Layout;
 
 // Type definitions for menu items and options
 type MenuItem = Required<MenuProps>["items"][number];
@@ -66,6 +66,8 @@ const getMenuConfigurations = () => ({
 const MainLayout: React.FC = () => {
   const isMobile = useMediaQuery(768);
   const [collapsed, setCollapsed] = useState(isMobile);
+  const [showFooter, setShowFooter] = useState(true);
+  const contentRef = React.useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
   const portal = location.pathname.split("/")[1];
@@ -106,6 +108,49 @@ const MainLayout: React.FC = () => {
   useEffect(() => {
     setCollapsed(isMobile);
   }, [isMobile]);
+
+  // Check if content is scrollable and set initial footer state
+  useEffect(() => {
+    const checkScrollable = () => {
+      if (contentRef.current) {
+        const { scrollHeight, clientHeight } = contentRef.current;
+        const isScrollable = scrollHeight > clientHeight;
+
+        if (isScrollable) {
+          // Has scrollable content - hide footer by default
+          setShowFooter(false);
+        } else {
+          // No scrollable content - always show footer
+          setShowFooter(true);
+        }
+      }
+    };
+
+    // Check on mount and location change
+    checkScrollable();
+
+    // Check again after a short delay to account for content loading
+    const timer = setTimeout(checkScrollable, 100);
+    return () => clearTimeout(timer);
+  }, [location.pathname]);
+
+  // Handle scroll to show/hide footer
+  const handleScroll = (e: React.UIEvent<HTMLElement>) => {
+    const target = e.currentTarget;
+    const currentScrollY = target.scrollTop;
+    const scrollHeight = target.scrollHeight;
+    const clientHeight = target.clientHeight;
+
+    // Check if we're at the bottom (last element is visible)
+    const isAtBottom = scrollHeight - currentScrollY - clientHeight <= 50;
+
+    // Show footer only when at the bottom (last element visible)
+    if (isAtBottom) {
+      setShowFooter(true); // At bottom - SHOW footer
+    } else {
+      setShowFooter(false); // Not at bottom - HIDE footer
+    }
+  };
   const handleMenuClick = async ({ key }: { key: string }) => {
     if (key.split("/")[1] === "signin") {
       await logout();
@@ -287,9 +332,11 @@ const MainLayout: React.FC = () => {
         </Header>
 
         <Content
+          ref={contentRef}
           className={`flex flex-col`}
           style={{
             padding: 24,
+            paddingBottom: 80,
             overflow: "auto",
             flex: 1,
           }}
@@ -298,6 +345,7 @@ const MainLayout: React.FC = () => {
               setCollapsed(true);
             }
           }}
+          onScroll={handleScroll}
         >
           {isMobile && !collapsed ? null : (
             <>
@@ -305,6 +353,51 @@ const MainLayout: React.FC = () => {
             </>
           )}
         </Content>
+        {isMobile && !collapsed ? null : (
+          <>
+            <Footer
+              style={{
+                textAlign: "center",
+                padding: "16px 24px",
+                background: "transparent",
+                transform: showFooter ? "translateY(0)" : "translateY(100%)",
+                transition: "transform 0.3s ease-in-out",
+                position: "fixed",
+                bottom: 0,
+                left: collapsed ? (isMobile ? 0 : 80) : 230,
+                right: 0,
+                zIndex: 10,
+              }}
+            >
+              <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4">
+                <span className="text-gray-600 text-sm">
+                  {/* &copy; {new Date().getFullYear()} Travel Planner. All rights */}
+                  &copy; 2025 Travel Planner. All rights reserved.
+                </span>
+                <span className="hidden sm:inline text-gray-400">•</span>
+                <div className="flex gap-4">
+                  <a
+                    href="/privacy-policy.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-gray-600 hover:text-[#FFE566] transition-colors underline"
+                  >
+                    Privacy Policy
+                  </a>
+                  <span className="text-gray-400">•</span>
+                  <a
+                    href="/terms-of-service.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-gray-600 hover:text-[#FFE566] transition-colors underline"
+                  >
+                    Terms of Service
+                  </a>
+                </div>
+              </div>
+            </Footer>
+          </>
+        )}
       </Layout>
     </Layout>
   );

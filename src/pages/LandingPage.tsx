@@ -201,8 +201,27 @@ const LandingPage: React.FC = () => {
 
       {/* Footer */}
       <footer className="py-8 px-4 sm:px-6 lg:px-8 bg-[#D4D4D4]/20 border-t border-[#D4D4D4]">
-        <div className="max-w-7xl mx-auto text-center text-[#2B2B2B]/70">
-          <p>&copy; 2025 Travel Planner. All rights reserved.</p>
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 mb-4">
+            <a
+              href="/privacy-policy.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#2B2B2B]/70 hover:text-[#2B2B2B] transition-colors underline"
+            >
+              Privacy Policy
+            </a>
+            <span className="hidden sm:inline text-[#2B2B2B]/50">•</span>
+            <a
+              href="/terms-of-service.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#2B2B2B]/70 hover:text-[#2B2B2B] transition-colors underline"
+            >
+              Terms of Service
+            </a>
+          </div>
+          <p className="text-center text-[#2B2B2B]/70">&copy; 2025 Travel Planner. All rights reserved.</p>
         </div>
       </footer>
     </div>
