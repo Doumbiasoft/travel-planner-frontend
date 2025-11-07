@@ -415,7 +415,7 @@ const Dashboard: React.FC = () => {
             <Spin size="large" />
             <p className="text-gray-600 mt-4">Loading trips...</p>
           </div>
-        ) : isError ? (
+        ) : isError && !isLoading ? (
           <div className="flex flex-col items-center justify-center py-12 text-center">
             <img src={error_broken} alt="" className="w-80 h-80" />
             <a href="https://storyset.com/web" className="hidden">
