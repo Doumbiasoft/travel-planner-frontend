@@ -34,10 +34,10 @@ export const AlertNotificationProvider: React.FC<
   };
 
   return (
-    <AlertNotificationContext.Provider value={openNotification}>
+    <AlertNotificationContext value={openNotification}>
       {contextHolder}
       {children}
-    </AlertNotificationContext.Provider>
+    </AlertNotificationContext>
   );
 };
 

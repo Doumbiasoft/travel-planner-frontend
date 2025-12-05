@@ -221,7 +221,9 @@ const LandingPage: React.FC = () => {
               Terms of Service
             </a>
           </div>
-          <p className="text-center text-[#2B2B2B]/70">&copy; 2025 Travel Planner. All rights reserved.</p>
+          <p className="text-center text-[#2B2B2B]/70">
+            &copy; 2025 Travel Planner. All rights reserved.
+          </p>
         </div>
       </footer>
     </div>
