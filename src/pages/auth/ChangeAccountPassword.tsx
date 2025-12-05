@@ -11,6 +11,7 @@ import { weakPasswordRegex } from "../../helpers/http-status-codes";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoadingOutlined } from "@ant-design/icons";
+import PageHead from "../../components/PageHead";
 const ChangePasswordSchema = z
   .object({
     password: z
@@ -105,6 +106,10 @@ const ChangeAccountPassword: React.FC = () => {
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center bg-[#D4D4D4]/50 backdrop-blur-md">
+      <PageHead
+        title="Change Password - Travel Planner"
+        description="Change your Travel Planner account password."
+      />
       {/* Go to login */}
       <div className="absolute top-8 left-8">
         <Link

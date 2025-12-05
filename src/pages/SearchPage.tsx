@@ -24,6 +24,7 @@ import { formatPriceWithSymbol } from "../utils";
 import error_broken from "../assets/images/error-broken.png";
 import { ENV } from "../config/env";
 import { useAlertNotification } from "../hooks/AlertNotification";
+import PageHead from "../components/PageHead";
 
 dayjs.extend(utc);
 
@@ -253,6 +254,11 @@ const SearchPage: React.FC = () => {
 
   return (
     <div className="flex flex-col">
+      <PageHead
+        title="Search - Travel Planner"
+        description="Find the best flight and hotel packages for your next adventure."
+        keywords="flight search, hotel search, travel packages, trip offers"
+      />
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-800">Search Offers</h1>
         <p className="text-gray-600 mt-2">

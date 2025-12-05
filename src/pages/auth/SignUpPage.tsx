@@ -13,6 +13,7 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { useGoogleOauth } from "../../hooks/useGoogleOauth";
 import { weakPasswordRegex } from "../../helpers/http-status-codes";
 import type { RegisterData } from "../../types";
+import PageHead from "../../components/PageHead";
 
 const SignUpSchema = z
   .object({
@@ -38,11 +39,9 @@ const SignUpSchema = z
     confirmPassword: z
       .string()
       .nonempty({ message: "Confirm password is required" }),
-    acceptTerms: z
-      .boolean()
-      .refine((val) => val === true, {
-        message: "You must accept the Terms of Service and Privacy Policy",
-      }),
+    acceptTerms: z.boolean().refine((val) => val === true, {
+      message: "You must accept the Terms of Service and Privacy Policy",
+    }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
@@ -96,6 +95,10 @@ const SignUpPage: React.FC = () => {
   };
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center  bg-[#D4D4D4]/50 backdrop-blur-md py-12">
+      <PageHead
+        title="Sign Up - Travel Planner"
+        description="Create a new account on Travel Planner to start planning your dream vacations."
+      />
       {/* Back to Home Link */}
       <div className="absolute top-8 left-8">
         <Link
@@ -320,7 +323,9 @@ const SignUpPage: React.FC = () => {
             >
               Privacy Policy
             </a>
-            <span className="hidden sm:inline text-[#D4D4D4]/50 text-xs">•</span>
+            <span className="hidden sm:inline text-[#D4D4D4]/50 text-xs">
+              •
+            </span>
             <a
               href="/terms-of-service.html"
               target="_blank"

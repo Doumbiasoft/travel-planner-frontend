@@ -9,6 +9,7 @@ import unitOfWork from "../../api/unit-of-work";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { ArrowLeft } from "lucide-react";
+import PageHead from "../../components/PageHead";
 
 const ResetSchema = z.object({
   email: z
@@ -55,6 +56,10 @@ const ForgotPassword: React.FC = () => {
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center bg-[#D4D4D4]/50 backdrop-blur-md">
+      <PageHead
+        title="Reset Password - Travel Planner"
+        description="Reset your Travel Planner account password."
+      />
       {/* Back to Home Link */}
       <div className="absolute top-8 left-8">
         <Link

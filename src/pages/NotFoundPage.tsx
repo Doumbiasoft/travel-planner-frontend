@@ -3,12 +3,17 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "antd";
 import { Home, ArrowLeft } from "lucide-react";
 import error_broken from "../assets/images/error-broken.png";
+import PageHead from "../components/PageHead";
 
 const NotFoundPage: React.FC = () => {
   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 px-4">
+      <PageHead
+        title="404 Not Found - Travel Planner"
+        description="The page you are looking for does not exist. Return to Travel Planner home."
+      />
       <div className="max-w-2xl w-full text-center">
         <div className="mb-8 flex justify-center">
           <img

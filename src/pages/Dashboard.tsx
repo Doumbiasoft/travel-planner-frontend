@@ -11,6 +11,7 @@ import trip_empty_state from "../assets/images/trip-empty-state-1.png";
 import error_broken from "../assets/images/error-broken.png";
 import { useNavigate } from "react-router-dom";
 import { ENV } from "../config/env";
+import PageHead from "../components/PageHead";
 
 const Dashboard: React.FC = () => {
   const { modal } = App.useApp();
@@ -263,6 +264,12 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="flex flex-col">
+      <PageHead
+        title="Dashboard - Travel Planner"
+        description="Manage and plan your trips with Travel Planner."
+      />
+
+      {/** Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-800">My Trips</h1>
         <p className="text-gray-600 mt-1">Plan and manage your adventures</p>

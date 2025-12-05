@@ -17,6 +17,7 @@ import {
 } from "../utils";
 import { ENV } from "../config/env";
 import error_broken from "../assets/images/error-broken.png";
+import PageHead from "../components/PageHead";
 
 const TripDetailPage: React.FC = () => {
   const { modal } = App.useApp();
@@ -274,6 +275,10 @@ const TripDetailPage: React.FC = () => {
 
   return (
     <div className="flex flex-col">
+      <PageHead
+        title="Trip Details - Travel Planner"
+        description="View and manage your trip details on Travel Planner."
+      />
       <div className="mb-6">
         <div className="mb-4">
           <Link

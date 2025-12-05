@@ -11,6 +11,7 @@ import { useAlertNotification } from "../hooks/AlertNotification";
 import unitOfWork from "../api/unit-of-work";
 import { weakPasswordRegex } from "../helpers/http-status-codes";
 import { useNavigate } from "react-router-dom";
+import PageHead from "../components/PageHead";
 
 // Profile Update Schema
 const ProfileSchema = z.object({
@@ -479,6 +480,10 @@ const SettingsPage: React.FC = () => {
 
   return (
     <div className="w-full h-full">
+      <PageHead
+        title="Settings - Travel Planner"
+        description="Manage your Travel Planner account settings and preferences."
+      />
       <div className="mb-6">
         <div className="flex items-center gap-4 mb-4">
           {user?.isOauth && user.oauthPicture ? (

@@ -6,6 +6,7 @@ import { ArrowLeft } from "lucide-react";
 import logo from "../../assets/images/travel-planner-vertical-logo.png";
 import wrong from "../../assets/images/wrong.png";
 import valid from "../../assets/images/checked.png";
+import PageHead from "../../components/PageHead";
 
 const ActivateAccountPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -43,6 +44,10 @@ const ActivateAccountPage: React.FC = () => {
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center bg-[#D4D4D4]/50 backdrop-blur-md">
+      <PageHead
+        title="Activate Account - Travel Planner"
+        description="Activate your Travel Planner account."
+      />
       {/* Go to login */}
       <div className="absolute top-8 left-8">
         <Link

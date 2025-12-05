@@ -9,11 +9,18 @@ import {
   Bell,
   Calendar,
 } from "lucide-react";
+import PageHead from "../components/PageHead";
+
 const LandingPage: React.FC = () => {
   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-[#FFFFFF]">
+      <PageHead
+        title="Travel Planner - Plan Your Perfect Trip Effortlessly"
+        description="Travel Planner helps you create personalized itineraries, discover destinations, manage budgets, and visualize your journey on interactive maps all in one place."
+        keywords="travel planner, trip planning, itinerary builder, travel budget, interactive maps"
+      />
       {/* Navigation Bar */}
       <nav className="fixed top-0 w-full bg-[#2B2B2BFF]/80 backdrop-blur-md z-50 border-b border-[#FFFF66]/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

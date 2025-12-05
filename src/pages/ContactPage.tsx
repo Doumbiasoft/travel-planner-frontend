@@ -8,6 +8,7 @@ import { Mail, MessageSquare } from "lucide-react";
 import unitOfWork from "../api/unit-of-work";
 import { useAlertNotification } from "../hooks/AlertNotification";
 import { useAuth } from "../hooks/useAuth";
+import PageHead from "../components/PageHead";
 
 // Contact Form Schema
 const ContactSchema = z.object({
@@ -66,6 +67,10 @@ const ContactPage: React.FC = () => {
 
   return (
     <div className="w-full h-full flex items-center justify-center p-4">
+      <PageHead
+        title="Contact Us - Travel Planner"
+        description="Contact Travel Planner support team."
+      />
       <div className="max-w-2xl w-full">
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-4">
