@@ -14,7 +14,7 @@ declare module "axios" {
 }
 
 // Internal API instance
-const internalAxiosInstance = axios.create({
+const internalAxiosInstance = axios.create({ 
   baseURL: ENV.VITE_API_BASE_URL,
   timeout: 10000, // 10 seconds - increased for auth refresh operations
   headers: {
